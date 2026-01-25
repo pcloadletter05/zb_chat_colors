@@ -861,6 +861,7 @@
             advancedColors[emoteType] = value;
             document.getElementById(`adv_${emoteType}Text`).value = value.toUpperCase();
             updateCommandOutput();
+            savePreferences();
         }
 
         // Update advanced color from text input
@@ -870,6 +871,7 @@
                 advancedColors[emoteType] = value;
                 document.getElementById(`adv_${emoteType}`).value = value;
                 updateCommandOutput();
+                savePreferences();
             }
         }
 
@@ -881,11 +883,105 @@
 
         document.getElementById('includeAdvanced').addEventListener('change', updateCommandOutput);
 
+        // Save preferences to localStorage
+        function savePreferences() {
+            const prefs = {
+                colors: {},
+                advanced: advancedColors,
+                titlebar: document.getElementById('titlebarColor').value,
+                background: document.getElementById('bgColor').value,
+                opacity: document.getElementById('bgOpacity').value,
+                includeAdvanced: document.getElementById('includeAdvanced').checked
+            };
+
+            // Save all basic colors
+            for (const [key, setting] of Object.entries(colorSettings)) {
+                prefs.colors[key] = document.getElementById(setting.id).value;
+            }
+
+            localStorage.setItem('zb_chat_colors_prefs', JSON.stringify(prefs));
+        }
+
+        // Load preferences from localStorage
+        function loadPreferences() {
+            const saved = localStorage.getItem('zb_chat_colors_prefs');
+            if (!saved) return;
+
+            try {
+                const prefs = JSON.parse(saved);
+
+                // Load basic colors
+                if (prefs.colors) {
+                    for (const [key, setting] of Object.entries(colorSettings)) {
+                        if (prefs.colors[key]) {
+                            document.getElementById(setting.id).value = prefs.colors[key];
+                            document.getElementById(setting.id + 'Text').value = prefs.colors[key].toUpperCase();
+                        }
+                    }
+                }
+
+                // Load preview settings
+                if (prefs.titlebar) {
+                    document.getElementById('titlebarColor').value = prefs.titlebar;
+                    document.getElementById('titlebarColorText').value = prefs.titlebar.toUpperCase();
+                }
+                if (prefs.background) {
+                    document.getElementById('bgColor').value = prefs.background;
+                    document.getElementById('bgColorText').value = prefs.background.toUpperCase();
+                }
+                if (prefs.opacity) {
+                    document.getElementById('bgOpacity').value = prefs.opacity;
+                    document.getElementById('opacityValue').textContent = prefs.opacity + '%';
+                }
+
+                // Load advanced colors
+                if (prefs.advanced) {
+                    for (const [emote, color] of Object.entries(prefs.advanced)) {
+                        advancedColors[emote] = color;
+                        const picker = document.getElementById(`adv_${emote}`);
+                        const text = document.getElementById(`adv_${emote}Text`);
+                        if (picker) picker.value = color;
+                        if (text) text.value = color.toUpperCase();
+                    }
+                }
+
+                // Load checkbox state
+                if (prefs.includeAdvanced !== undefined) {
+                    document.getElementById('includeAdvanced').checked = prefs.includeAdvanced;
+                }
+            } catch (e) {
+                console.warn('Failed to load preferences:', e);
+            }
+        }
+
+        // Hook save into color input changes
+        function initColorInputsWithSave() {
+            const colorIds = [
+                'nameColor', 'dialogueColor', 'italicColor', 'boldColor',
+                'whisperColor', 'lowColor', 'sayColor', 'yellColor',
+                'meColor', 'doColor', 'oocColor', 'pmColor',
+                'factionColor', 'safehouseColor', 'generalColor', 'adminColor',
+                'titlebarColor', 'bgColor'
+            ];
+            colorIds.forEach(id => {
+                const picker = document.getElementById(id);
+                const text = document.getElementById(id + 'Text');
+                if (picker) picker.addEventListener('change', savePreferences);
+                if (text) text.addEventListener('change', savePreferences);
+            });
+        }
+
         // Initialize
         initColorInputs();
         generateAdvancedInputs();
+        loadPreferences();
+        initColorInputsWithSave();
         renderChatPreview();
         updateCommandOutput();
+
+        // Save on opacity and checkbox changes
+        document.getElementById('bgOpacity').addEventListener('change', savePreferences);
+        document.getElementById('includeAdvanced').addEventListener('change', savePreferences);
     </script>
 </body>
 </html>

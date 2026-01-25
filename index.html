@@ -258,6 +258,18 @@
             opacity: 1;
         }
         .bold { font-weight: bold; }
+        .reset-btn {
+            padding: 8px 16px;
+            background: #4a5568;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .reset-btn:hover {
+            background: #5a6578;
+        }
 
         /* Advanced Section Styles */
         .advanced-section {
@@ -367,6 +379,9 @@
 <body>
     <h1>TICS Chat Color Picker</h1>
     <p class="subtitle">Total Immersive Chat System - Project Zomboid</p>
+    <div style="text-align: center; margin-bottom: 20px;">
+        <button id="resetBtn" class="reset-btn">Reset to Defaults</button>
+    </div>
 
     <div class="container">
         <div class="settings-panel">
@@ -591,6 +606,29 @@
 
         // Store advanced color values
         const advancedColors = {};
+
+        // Default values for reset
+        const defaultColors = {
+            nameColor: '#FFFFFF',
+            dialogueColor: '#FFFFFF',
+            italicColor: '#ADD4A0',
+            boldColor: '#C3A4CF',
+            whisperColor: '#B4FFC5',
+            lowColor: '#B4FFFF',
+            sayColor: '#FFFFFF',
+            yellColor: '#E69696',
+            meColor: '#DFFDFF',
+            doColor: '#E1DFFF',
+            oocColor: '#92FF94',
+            pmColor: '#FFB8DA',
+            factionColor: '#AAFFAA',
+            safehouseColor: '#FFFF60',
+            generalColor: '#BEBEFF',
+            adminColor: '#FFAAAA',
+            titlebarColor: '#2D2D2D',
+            bgColor: '#000000',
+            bgOpacity: '75'
+        };
 
         // Helper to convert hex to RGB string
         function hexToRgb(hex) {
@@ -883,6 +921,40 @@
 
         document.getElementById('includeAdvanced').addEventListener('change', updateCommandOutput);
 
+        // Reset to default values
+        function resetToDefaults() {
+            // Clear localStorage
+            localStorage.removeItem('zb_chat_colors_prefs');
+
+            // Reset basic colors
+            for (const [id, value] of Object.entries(defaultColors)) {
+                const picker = document.getElementById(id);
+                const text = document.getElementById(id + 'Text');
+                if (picker) picker.value = value;
+                if (text) text.value = value.toUpperCase();
+            }
+
+            // Reset opacity display
+            document.getElementById('opacityValue').textContent = defaultColors.bgOpacity + '%';
+
+            // Reset advanced colors
+            for (const emote of Object.keys(advancedColors)) {
+                advancedColors[emote] = '#FFFFFF';
+                const picker = document.getElementById(`adv_${emote}`);
+                const text = document.getElementById(`adv_${emote}Text`);
+                if (picker) picker.value = '#FFFFFF';
+                if (text) text.value = '#FFFFFF';
+            }
+
+            // Reset checkbox
+            document.getElementById('includeAdvanced').checked = false;
+
+            // Update preview and commands
+            renderChatPreview();
+            updateCommandOutput();
+            showToast('Reset to defaults!');
+        }
+
         // Save preferences to localStorage
         function savePreferences() {
             const prefs = {
@@ -982,6 +1054,9 @@
         // Save on opacity and checkbox changes
         document.getElementById('bgOpacity').addEventListener('change', savePreferences);
         document.getElementById('includeAdvanced').addEventListener('change', savePreferences);
+
+        // Reset button
+        document.getElementById('resetBtn').addEventListener('click', resetToDefaults);
     </script>
 </body>
 </html>

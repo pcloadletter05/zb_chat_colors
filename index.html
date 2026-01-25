@@ -434,8 +434,8 @@
                 <h3>Your Name</h3>
                 <div class="color-row">
                     <label>Name Color</label>
-                    <input type="color" id="nameColor" value="#FFFFFF">
-                    <input type="text" id="nameColorText" value="#FFFFFF">
+                    <input type="color" id="nameColor" value="#7E7779">
+                    <input type="text" id="nameColorText" value="#7E7779">
                     <button class="copy-btn" onclick="copyCommand('color')">Copy</button>
                 </div>
             </div>
@@ -444,8 +444,8 @@
                 <h3>Text Formatting</h3>
                 <div class="color-row">
                     <label>Dialogue " "</label>
-                    <input type="color" id="dialogueColor" value="#FFFFFF">
-                    <input type="text" id="dialogueColorText" value="#FFFFFF">
+                    <input type="color" id="dialogueColor" value="#FEFEFE">
+                    <input type="text" id="dialogueColorText" value="#FEFEFE">
                     <button class="copy-btn" onclick="copyCommand('dc')">Copy</button>
                 </div>
                 <div class="color-row">
@@ -481,8 +481,8 @@
                 </div>
                 <div class="color-row">
                     <label>/say</label>
-                    <input type="color" id="sayColor" value="#FFFFFF">
-                    <input type="text" id="sayColorText" value="#FFFFFF">
+                    <input type="color" id="sayColor" value="#FEFEFE">
+                    <input type="text" id="sayColorText" value="#FEFEFE">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'say')">Copy</button>
                 </div>
                 <div class="color-row">
@@ -652,13 +652,13 @@
 
         // Default values for reset
         const defaultColors = {
-            nameColor: '#FFFFFF',
-            dialogueColor: '#FFFFFF',
+            nameColor: '#7E7779',
+            dialogueColor: '#FEFEFE',
             italicColor: '#ADD4A0',
             boldColor: '#C3A4CF',
             whisperColor: '#B4FFC5',
             lowColor: '#B4FFFF',
-            sayColor: '#FFFFFF',
+            sayColor: '#FEFEFE',
             yellColor: '#E69696',
             meColor: '#DFFDFF',
             doColor: '#E1DFFF',
@@ -724,7 +724,7 @@
 
         // Copy advanced command
         function copyAdvancedCommand(emoteType) {
-            const color = advancedColors[emoteType] || '#FFFFFF';
+            const color = advancedColors[emoteType] || '#FEFEFE';
             const rgb = hexToRgb(color);
             const command = `/emotecolor ${emoteType} ${rgb}`;
             navigator.clipboard.writeText(command);
@@ -743,7 +743,7 @@
             // Include advanced if checkbox is checked
             if (document.getElementById('includeAdvanced').checked) {
                 for (const [emoteType, color] of Object.entries(advancedColors)) {
-                    if (color && color !== '#FFFFFF') {
+                    if (color && color !== '#FFFFFF' && color !== '#FEFEFE') {
                         const rgb = hexToRgb(color);
                         commands.push(`/emotecolor ${emoteType} ${rgb}`);
                     }
@@ -921,12 +921,12 @@
                 html += `<div class="advanced-group"><h4>${group}</h4>`;
                 for (const emote of emotes) {
                     const displayName = emote.replace(group.toLowerCase(), '');
-                    advancedColors[emote] = '#FFFFFF';
+                    advancedColors[emote] = '#FEFEFE';
                     html += `
                         <div class="advanced-row">
                             <label>${displayName || 'base'}</label>
-                            <input type="color" id="adv_${emote}" value="#FFFFFF" onchange="updateAdvancedColor('${emote}', this.value)">
-                            <input type="text" id="adv_${emote}Text" value="#FFFFFF" onchange="updateAdvancedColorFromText('${emote}', this.value)">
+                            <input type="color" id="adv_${emote}" value="#FEFEFE" onchange="updateAdvancedColor('${emote}', this.value)">
+                            <input type="text" id="adv_${emote}Text" value="#FEFEFE" onchange="updateAdvancedColorFromText('${emote}', this.value)">
                             <button class="copy-btn" onclick="copyAdvancedCommand('${emote}')">Copy</button>
                         </div>
                     `;
@@ -982,11 +982,11 @@
 
             // Reset advanced colors
             for (const emote of Object.keys(advancedColors)) {
-                advancedColors[emote] = '#FFFFFF';
+                advancedColors[emote] = '#FEFEFE';
                 const picker = document.getElementById(`adv_${emote}`);
                 const text = document.getElementById(`adv_${emote}Text`);
-                if (picker) picker.value = '#FFFFFF';
-                if (text) text.value = '#FFFFFF';
+                if (picker) picker.value = '#FEFEFE';
+                if (text) text.value = '#FEFEFE';
             }
 
             // Reset checkbox

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TICS Chat Color Picker - Project Zomboid</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+        }
+        .container {
+            display: flex;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+        .settings-panel {
+            flex: 1;
+            min-width: 350px;
+            background: #16213e;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .preview-panel {
+            flex: 1;
+            min-width: 400px;
+        }
+        h2 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+            font-size: 1.1em;
+        }
+        .color-group {
+            margin-bottom: 25px;
+        }
+        .color-group h3 {
+            margin: 0 0 10px 0;
+            font-size: 0.95em;
+            color: #aaa;
+        }
+        .color-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 10px;
+        }
+        .color-row label {
+            width: 100px;
+            font-size: 0.9em;
+        }
+        .color-row input[type="color"] {
+            width: 40px;
+            height: 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: none;
+        }
+        .color-row input[type="text"] {
+            width: 80px;
+            padding: 5px 8px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            background: #0f0f23;
+            color: #fff;
+            font-family: monospace;
+            font-size: 0.85em;
+        }
+        .color-row .copy-btn {
+            padding: 5px 10px;
+            background: #4a5568;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        .color-row .copy-btn:hover {
+            background: #5a6578;
+        }
+        .chat-preview {
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .chat-message {
+            margin-bottom: 4px;
+            word-wrap: break-word;
+        }
+        .chat-name {
+            font-weight: bold;
+        }
+        .timestamp {
+            color: #888;
+            font-size: 0.85em;
+        }
+        .commands-section {
+            background: #16213e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .command-output {
+            background: #0f0f23;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .copy-all-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: #4CAF50;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .copy-all-btn:hover {
+            background: #45a049;
+        }
+        .bg-settings {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .bg-settings label {
+            font-size: 0.9em;
+        }
+        .bg-settings input[type="range"] {
+            width: 100px;
+        }
+        .opacity-value {
+            font-family: monospace;
+            color: #888;
+        }
+        .section-divider {
+            border-top: 1px solid #333;
+            margin: 20px 0;
+            padding-top: 15px;
+        }
+        .copied-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+        .copied-toast.show {
+            opacity: 1;
+        }
+        .italic { font-style: italic; }
+        .bold { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>TICS Chat Color Picker</h1>
+    <p class="subtitle">Total Immersive Chat System - Project Zomboid</p>
+
+    <div class="container">
+        <div class="settings-panel">
+            <h2>Player Settings</h2>
+
+            <div class="color-group">
+                <h3>Your Name</h3>
+                <div class="color-row">
+                    <label>Name Color</label>
+                    <input type="color" id="nameColor" value="#FFFFFF">
+                    <input type="text" id="nameColorText" value="#FFFFFF">
+                    <button class="copy-btn" onclick="copyCommand('color')">Copy</button>
+                </div>
+            </div>
+
+            <div class="color-group">
+                <h3>Text Formatting</h3>
+                <div class="color-row">
+                    <label>Dialogue " "</label>
+                    <input type="color" id="dialogueColor" value="#FFFFFF">
+                    <input type="text" id="dialogueColorText" value="#FFFFFF">
+                    <button class="copy-btn" onclick="copyCommand('dc')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label>Italics *text*</label>
+                    <input type="color" id="italicColor" value="#ADD4A0">
+                    <input type="text" id="italicColorText" value="#ADD4A0">
+                    <button class="copy-btn" onclick="copyCommand('ic')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label>Bold **text**</label>
+                    <input type="color" id="boldColor" value="#C3A4CF">
+                    <input type="text" id="boldColorText" value="#C3A4CF">
+                    <button class="copy-btn" onclick="copyCommand('bc')">Copy</button>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+            <h2>Chat Stream Colors (/emotecolor)</h2>
+
+            <div class="color-group">
+                <h3>Voice Channels</h3>
+                <div class="color-row">
+                    <label>/whisper</label>
+                    <input type="color" id="whisperColor" value="#B4FFC5">
+                    <input type="text" id="whisperColorText" value="#B4FFC5">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'whisper')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label>/low</label>
+                    <input type="color" id="lowColor" value="#B4FFFF">
+                    <input type="text" id="lowColorText" value="#B4FFFF">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'low')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label>/say</label>
+                    <input type="color" id="sayColor" value="#FFFFFF">
+                    <input type="text" id="sayColorText" value="#FFFFFF">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'say')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label>/yell</label>
+                    <input type="color" id="yellColor" value="#E69696">
+                    <input type="text" id="yellColorText" value="#E69696">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'yell')">Copy</button>
+                </div>
+            </div>
+
+            <div class="color-group">
+                <h3>Roleplay Channels</h3>
+                <div class="color-row">
+                    <label>/me</label>
+                    <input type="color" id="meColor" value="#DFFDFF">
+                    <input type="text" id="meColorText" value="#DFFDFF">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'me')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label>/do</label>
+                    <input type="color" id="doColor" value="#E1DFFF">
+                    <input type="text" id="doColorText" value="#E1DFFF">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'do')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label>/ooc</label>
+                    <input type="color" id="oocColor" value="#92FF94">
+                    <input type="text" id="oocColorText" value="#92FF94">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'ooc')">Copy</button>
+                </div>
+            </div>
+
+            <div class="color-group">
+                <h3>Group Channels</h3>
+                <div class="color-row">
+                    <label>/pm</label>
+                    <input type="color" id="pmColor" value="#FFB8DA">
+                    <input type="text" id="pmColorText" value="#FFB8DA">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'pm')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label>/faction</label>
+                    <input type="color" id="factionColor" value="#AAFFAA">
+                    <input type="text" id="factionColorText" value="#AAFFAA">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'faction')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label>/safehouse</label>
+                    <input type="color" id="safehouseColor" value="#FFFF60">
+                    <input type="text" id="safehouseColorText" value="#FFFF60">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'safehouse')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label>/general</label>
+                    <input type="color" id="generalColor" value="#BEBEFF">
+                    <input type="text" id="generalColorText" value="#BEBEFF">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'general')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label>/admin</label>
+                    <input type="color" id="adminColor" value="#FFAAAA">
+                    <input type="text" id="adminColorText" value="#FFAAAA">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'admin')">Copy</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-panel">
+            <div style="background: #16213e; border-radius: 10px; padding: 20px;">
+                <h2>Live Preview</h2>
+                <div class="bg-settings">
+                    <label>Background:</label>
+                    <input type="color" id="bgColor" value="#000000">
+                    <label>Opacity:</label>
+                    <input type="range" id="bgOpacity" min="0" max="100" value="75">
+                    <span class="opacity-value" id="opacityValue">75%</span>
+                </div>
+                <div class="chat-preview" id="chatPreview">
+                    <!-- Chat messages will be rendered here -->
+                </div>
+            </div>
+
+            <div class="commands-section">
+                <h2>All Commands</h2>
+                <div class="command-output" id="commandOutput"></div>
+                <button class="copy-all-btn" onclick="copyAllCommands()">Copy All Commands</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="copied-toast" id="toast">Copied to clipboard!</div>
+
+    <script>
+        // Color settings with their IDs and command mappings
+        const colorSettings = {
+            name: { id: 'nameColor', command: 'color' },
+            dialogue: { id: 'dialogueColor', command: 'dc' },
+            italic: { id: 'italicColor', command: 'ic' },
+            bold: { id: 'boldColor', command: 'bc' },
+            whisper: { id: 'whisperColor', command: 'emotecolor whisper' },
+            low: { id: 'lowColor', command: 'emotecolor low' },
+            say: { id: 'sayColor', command: 'emotecolor say' },
+            yell: { id: 'yellColor', command: 'emotecolor yell' },
+            me: { id: 'meColor', command: 'emotecolor me' },
+            do: { id: 'doColor', command: 'emotecolor do' },
+            ooc: { id: 'oocColor', command: 'emotecolor ooc' },
+            pm: { id: 'pmColor', command: 'emotecolor pm' },
+            faction: { id: 'factionColor', command: 'emotecolor faction' },
+            safehouse: { id: 'safehouseColor', command: 'emotecolor safehouse' },
+            general: { id: 'generalColor', command: 'emotecolor general' },
+            admin: { id: 'adminColor', command: 'emotecolor admin' }
+        };
+
+        // Helper to convert hex to RGB string
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            if (result) {
+                return `${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)}`;
+            }
+            return '255,255,255';
+        }
+
+        // Show toast notification
+        function showToast(message = 'Copied to clipboard!') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // Copy a single command
+        function copyCommand(type, subtype = null) {
+            const colorInput = document.getElementById(
+                subtype ? `${subtype}Color` :
+                type === 'color' ? 'nameColor' :
+                type === 'dc' ? 'dialogueColor' :
+                type === 'ic' ? 'italicColor' :
+                type === 'bc' ? 'boldColor' : 'nameColor'
+            );
+            const rgb = hexToRgb(colorInput.value);
+            let command;
+            if (type === 'emotecolor') {
+                command = `/${type} ${subtype} ${rgb}`;
+            } else {
+                command = `/${type} ${rgb}`;
+            }
+            navigator.clipboard.writeText(command);
+            showToast(`Copied: ${command}`);
+        }
+
+        // Generate all commands
+        function generateAllCommands() {
+            const commands = [];
+            for (const [key, setting] of Object.entries(colorSettings)) {
+                const colorInput = document.getElementById(setting.id);
+                const rgb = hexToRgb(colorInput.value);
+                commands.push(`/${setting.command} ${rgb}`);
+            }
+            return commands.join('\n');
+        }
+
+        // Copy all commands
+        function copyAllCommands() {
+            const commands = generateAllCommands();
+            navigator.clipboard.writeText(commands);
+            showToast('All commands copied!');
+        }
+
+        // Update command output display
+        function updateCommandOutput() {
+            document.getElementById('commandOutput').textContent = generateAllCommands();
+        }
+
+        // Render chat preview
+        function renderChatPreview() {
+            const preview = document.getElementById('chatPreview');
+            const bgColor = document.getElementById('bgColor').value;
+            const bgOpacity = document.getElementById('bgOpacity').value / 100;
+
+            // Convert hex to rgba
+            const r = parseInt(bgColor.slice(1, 3), 16);
+            const g = parseInt(bgColor.slice(3, 5), 16);
+            const b = parseInt(bgColor.slice(5, 7), 16);
+            preview.style.background = `rgba(${r}, ${g}, ${b}, ${bgOpacity})`;
+
+            const nameColor = document.getElementById('nameColor').value;
+            const dialogueColor = document.getElementById('dialogueColor').value;
+            const italicColor = document.getElementById('italicColor').value;
+            const boldColor = document.getElementById('boldColor').value;
+            const whisperColor = document.getElementById('whisperColor').value;
+            const lowColor = document.getElementById('lowColor').value;
+            const sayColor = document.getElementById('sayColor').value;
+            const yellColor = document.getElementById('yellColor').value;
+            const meColor = document.getElementById('meColor').value;
+            const doColor = document.getElementById('doColor').value;
+            const oocColor = document.getElementById('oocColor').value;
+            const pmColor = document.getElementById('pmColor').value;
+            const factionColor = document.getElementById('factionColor').value;
+            const safehouseColor = document.getElementById('safehouseColor').value;
+            const generalColor = document.getElementById('generalColor').value;
+            const adminColor = document.getElementById('adminColor').value;
+
+            const playerName = 'YourName';
+            const otherPlayer = 'Survivor';
+
+            preview.innerHTML = `
+                <div class="chat-message">
+                    <span class="timestamp">[12:00]</span>
+                    <span style="color: ${whisperColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> whispers: Hey, over here...</span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:01]</span>
+                    <span style="color: ${lowColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> says quietly: I found some supplies.</span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:02]</span>
+                    <span style="color: ${sayColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> says: Hello there, fellow survivor!</span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:03]</span>
+                    <span style="color: ${yellColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> yells: WATCH OUT, ZOMBIES!</span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:04]</span>
+                    <span style="color: ${meColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span class="italic" style="color: ${italicColor}">*looks around nervously*</span> <span style="color: ${dialogueColor}">"Is anyone there?"</span></span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:05]</span>
+                    <span style="color: ${meColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span class="bold" style="color: ${boldColor}">**slams the door shut**</span></span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:06]</span>
+                    <span style="color: ${doColor}">* The room falls silent as the last zombie collapses.</span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:07]</span>
+                    <span style="color: ${oocColor}">[OOC] <span class="chat-name" style="color: ${nameColor}">${playerName}</span>: brb getting water</span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:08]</span>
+                    <span style="color: ${pmColor}">[PM from <span style="color: ${nameColor}">${otherPlayer}</span>]: Meet me at the safehouse</span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:09]</span>
+                    <span style="color: ${factionColor}">[Faction] <span class="chat-name" style="color: ${nameColor}">${playerName}</span>: Base is secure.</span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:10]</span>
+                    <span style="color: ${safehouseColor}">[Safehouse] <span class="chat-name" style="color: ${nameColor}">${playerName}</span>: Restocking the fridge.</span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:11]</span>
+                    <span style="color: ${generalColor}">[General] <span class="chat-name" style="color: ${nameColor}">${playerName}</span>: Anyone trading ammo?</span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:12]</span>
+                    <span style="color: ${adminColor}">[Admin] Server restart in 10 minutes.</span>
+                </div>
+            `;
+        }
+
+        // Sync color picker with text input
+        function syncColorInputs(colorId) {
+            const colorPicker = document.getElementById(colorId);
+            const textInput = document.getElementById(colorId + 'Text');
+
+            colorPicker.addEventListener('input', () => {
+                textInput.value = colorPicker.value.toUpperCase();
+                renderChatPreview();
+                updateCommandOutput();
+            });
+
+            textInput.addEventListener('input', () => {
+                let value = textInput.value;
+                if (!value.startsWith('#')) value = '#' + value;
+                if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+                    colorPicker.value = value;
+                    renderChatPreview();
+                    updateCommandOutput();
+                }
+            });
+
+            textInput.addEventListener('blur', () => {
+                textInput.value = colorPicker.value.toUpperCase();
+            });
+        }
+
+        // Initialize all color input syncing
+        function initColorInputs() {
+            const colorIds = [
+                'nameColor', 'dialogueColor', 'italicColor', 'boldColor',
+                'whisperColor', 'lowColor', 'sayColor', 'yellColor',
+                'meColor', 'doColor', 'oocColor', 'pmColor',
+                'factionColor', 'safehouseColor', 'generalColor', 'adminColor'
+            ];
+            colorIds.forEach(syncColorInputs);
+        }
+
+        // Background settings listeners
+        document.getElementById('bgColor').addEventListener('input', renderChatPreview);
+        document.getElementById('bgOpacity').addEventListener('input', (e) => {
+            document.getElementById('opacityValue').textContent = e.target.value + '%';
+            renderChatPreview();
+        });
+
+        // Initialize
+        initColorInputs();
+        renderChatPreview();
+        updateCommandOutput();
+    </script>
+</body>
+</html>

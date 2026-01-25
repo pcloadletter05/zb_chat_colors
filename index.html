@@ -423,13 +423,149 @@
             width: 16px;
             height: 16px;
         }
+
+        /* Action Buttons */
+        .action-btn {
+            padding: 8px 16px;
+            background: #4a5568;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .action-btn:hover {
+            background: #5a6578;
+        }
+        .export-btn {
+            background: #2d6a4f;
+        }
+        .export-btn:hover {
+            background: #40916c;
+        }
+        .import-btn {
+            background: #1d4e89;
+        }
+        .import-btn:hover {
+            background: #2a69a0;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+        }
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: #16213e;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+        }
+        .modal-header h2 {
+            margin: 0;
+            padding: 0;
+            border: none;
+            font-size: 1.2em;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: #fff;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .modal-body p {
+            margin: 0 0 12px 0;
+            color: #aaa;
+        }
+        .modal-body textarea {
+            width: 100%;
+            height: 150px;
+            padding: 12px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background: #0f0f23;
+            color: #fff;
+            font-family: monospace;
+            font-size: 0.85em;
+            resize: vertical;
+        }
+        .modal-body textarea:focus {
+            outline: none;
+            border-color: #4a5568;
+        }
+        .modal-error {
+            color: #ff6b6b;
+            margin-top: 10px;
+            font-size: 0.9em;
+            display: none;
+        }
+        .modal-error.show {
+            display: block;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 15px 20px;
+            border-top: 1px solid #333;
+        }
     </style>
 </head>
 <body>
     <h1>TICS Chat Color Picker</h1>
     <p class="subtitle">Total Immersive Chat System - Project Zomboid</p>
-    <div style="text-align: center; margin-bottom: 20px;">
+    <div style="text-align: center; margin-bottom: 20px; display: flex; gap: 10px; justify-content: center;">
+        <button id="exportBtn" class="action-btn export-btn">Export</button>
+        <button id="importBtn" class="action-btn import-btn">Import</button>
         <button id="resetBtn" class="reset-btn">Reset to Defaults</button>
+    </div>
+
+    <!-- Import Modal -->
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Import Settings</h2>
+                <button class="modal-close" onclick="closeImportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Paste your exported settings below:</p>
+                <textarea id="importData" placeholder="Paste exported JSON here..."></textarea>
+                <div class="modal-error" id="importError"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn" onclick="closeImportModal()">Cancel</button>
+                <button class="action-btn export-btn" onclick="loadImportedSettings()">Load Settings</button>
+            </div>
+        </div>
     </div>
 
     <div class="container">
@@ -492,10 +628,44 @@
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'say')">Copy</button>
                 </div>
                 <div class="color-row">
+                    <label>/long</label>
+                    <input type="color" id="longColor" value="#FFD699">
+                    <input type="text" id="longColorText" value="#FFD699">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'long')">Copy</button>
+                </div>
+                <div class="color-row">
                     <label>/yell</label>
                     <input type="color" id="yellColor" value="#E69696">
                     <input type="text" id="yellColorText" value="#E69696">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'yell')">Copy</button>
+                </div>
+            </div>
+
+            <div class="color-group">
+                <h3>Voice Me</h3>
+                <div class="color-row">
+                    <label>/mewhisper</label>
+                    <input type="color" id="mewhisperColor" value="#B4FFC5">
+                    <input type="text" id="mewhisperColorText" value="#B4FFC5">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'mewhisper')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label>/melow</label>
+                    <input type="color" id="melowColor" value="#B4FFFF">
+                    <input type="text" id="melowColorText" value="#B4FFFF">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'melow')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label>/me</label>
+                    <input type="color" id="menormalColor" value="#DFFDFF">
+                    <input type="text" id="menormalColorText" value="#DFFDFF">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'menormal')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label>/melong</label>
+                    <input type="color" id="melongColor" value="#E69696">
+                    <input type="text" id="melongColorText" value="#E69696">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'melong')">Copy</button>
                 </div>
             </div>
 
@@ -632,10 +802,15 @@
             whisper: { id: 'whisperColor', command: 'emotecolor whisper' },
             low: { id: 'lowColor', command: 'emotecolor low' },
             say: { id: 'sayColor', command: 'emotecolor say' },
+            long: { id: 'longColor', command: 'emotecolor long' },
             yell: { id: 'yellColor', command: 'emotecolor yell' },
             me: { id: 'meColor', command: 'emotecolor me' },
             do: { id: 'doColor', command: 'emotecolor do' },
             ooc: { id: 'oocColor', command: 'emotecolor ooc' },
+            mewhisper: { id: 'mewhisperColor', command: 'emotecolor mewhisper' },
+            melow: { id: 'melowColor', command: 'emotecolor melow' },
+            menormal: { id: 'menormalColor', command: 'emotecolor menormal' },
+            melong: { id: 'melongColor', command: 'emotecolor melong' },
             pm: { id: 'pmColor', command: 'emotecolor pm' },
             faction: { id: 'factionColor', command: 'emotecolor faction' },
             safehouse: { id: 'safehouseColor', command: 'emotecolor safehouse' },
@@ -665,10 +840,15 @@
             whisperColor: '#B4FFC5',
             lowColor: '#B4FFFF',
             sayColor: '#FEFEFE',
+            longColor: '#FFD699',
             yellColor: '#E69696',
             meColor: '#DFFDFF',
             doColor: '#E1DFFF',
             oocColor: '#92FF94',
+            mewhisperColor: '#B4FFC5',
+            melowColor: '#B4FFFF',
+            menormalColor: '#DFFDFF',
+            melongColor: '#E69696',
             pmColor: '#FFB8DA',
             factionColor: '#AAFFAA',
             safehouseColor: '#FFFF60',
@@ -801,7 +981,12 @@
             const whisperColor = document.getElementById('whisperColor').value;
             const lowColor = document.getElementById('lowColor').value;
             const sayColor = document.getElementById('sayColor').value;
+            const longColor = document.getElementById('longColor').value;
             const yellColor = document.getElementById('yellColor').value;
+            const mewhisperColor = document.getElementById('mewhisperColor').value;
+            const melowColor = document.getElementById('melowColor').value;
+            const menormalColor = document.getElementById('menormalColor').value;
+            const melongColor = document.getElementById('melongColor').value;
             const meColor = document.getElementById('meColor').value;
             const doColor = document.getElementById('doColor').value;
             const oocColor = document.getElementById('oocColor').value;
@@ -829,42 +1014,62 @@
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:03]</span>
-                    <span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span style="color: #919191">yells,</span> <span style="color: ${yellColor}">"WATCH OUT, ZOMBIES!"</span>
+                    <span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span style="color: #919191">shouts,</span> <span style="color: ${longColor}">"Can anyone hear me?!"</span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:04]</span>
-                    <span style="color: ${meColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span style="color: ${italicColor}">*looks around nervously*</span> <span style="color: ${dialogueColor}">"Is anyone there?"</span></span>
+                    <span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span style="color: #919191">yells,</span> <span style="color: ${yellColor}">"WATCH OUT, ZOMBIES!"</span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:05]</span>
-                    <span style="color: ${meColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span class="bold" style="color: ${boldColor}">**slams the door shut**</span></span>
+                    <span style="color: ${mewhisperColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> leans in close, <span style="color: ${dialogueColor}">"Meet me outside..."</span></span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:06]</span>
-                    <span style="color: ${doColor}">* The room falls silent as the last zombie collapses.</span>
+                    <span style="color: ${melowColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> glances around nervously, <span style="color: ${dialogueColor}">"Did you hear that?"</span></span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:07]</span>
-                    <span style="color: ${oocColor}">[OOC] <span class="chat-name" style="color: ${nameColor}">${playerName}</span>: brb getting water</span>
+                    <span style="color: ${menormalColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> nods in agreement, <span style="color: ${dialogueColor}">"Let's move out."</span></span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:08]</span>
-                    <span style="color: ${pmColor}">[PM from <span style="color: ${nameColor}">${otherPlayer}</span>]: Meet me at the safehouse</span>
+                    <span style="color: ${melongColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> waves their arms frantically, <span style="color: ${dialogueColor}">"Help! Over here!"</span></span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:09]</span>
-                    <span style="color: ${factionColor}">[Faction] <span class="chat-name" style="color: ${nameColor}">${playerName}</span>: Base is secure.</span>
+                    <span style="color: ${meColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span style="color: ${italicColor}">*looks around nervously*</span> <span style="color: ${dialogueColor}">"Is anyone there?"</span></span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:10]</span>
-                    <span style="color: ${safehouseColor}">[Safehouse] <span class="chat-name" style="color: ${nameColor}">${playerName}</span>: Restocking the fridge.</span>
+                    <span style="color: ${meColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span class="bold" style="color: ${boldColor}">**slams the door shut**</span></span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:11]</span>
-                    <span style="color: ${generalColor}">[General] <span class="chat-name" style="color: ${nameColor}">${playerName}</span>: Anyone trading ammo?</span>
+                    <span style="color: ${doColor}">* The room falls silent as the last zombie collapses.</span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:12]</span>
+                    <span style="color: ${oocColor}">[OOC] <span class="chat-name" style="color: ${nameColor}">${playerName}</span>: brb getting water</span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:13]</span>
+                    <span style="color: ${pmColor}">[PM from <span style="color: ${nameColor}">${otherPlayer}</span>]: Meet me at the safehouse</span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:14]</span>
+                    <span style="color: ${factionColor}">[Faction] <span class="chat-name" style="color: ${nameColor}">${playerName}</span>: Base is secure.</span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:15]</span>
+                    <span style="color: ${safehouseColor}">[Safehouse] <span class="chat-name" style="color: ${nameColor}">${playerName}</span>: Restocking the fridge.</span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:16]</span>
+                    <span style="color: ${generalColor}">[General] <span class="chat-name" style="color: ${nameColor}">${playerName}</span>: Anyone trading ammo?</span>
+                </div>
+                <div class="chat-message">
+                    <span class="timestamp">[12:17]</span>
                     <span style="color: ${adminColor}">[Admin] Server restart in 10 minutes.</span>
                 </div>
             `;
@@ -902,9 +1107,10 @@
         function initColorInputs() {
             const colorIds = [
                 'nameColor', 'dialogueColor', 'italicColor', 'boldColor',
-                'whisperColor', 'lowColor', 'sayColor', 'yellColor',
-                'meColor', 'doColor', 'oocColor', 'pmColor',
-                'factionColor', 'safehouseColor', 'generalColor', 'adminColor',
+                'whisperColor', 'lowColor', 'sayColor', 'longColor', 'yellColor',
+                'mewhisperColor', 'melowColor', 'menormalColor', 'melongColor',
+                'meColor', 'doColor', 'oocColor',
+                'pmColor', 'factionColor', 'safehouseColor', 'generalColor', 'adminColor',
                 'titlebarColor', 'bgColor'
             ];
             colorIds.forEach(syncColorInputs);
@@ -1004,6 +1210,134 @@
             showToast('Reset to defaults!');
         }
 
+        // Export settings to JSON
+        function exportSettings() {
+            const exportData = {
+                version: 1,
+                colors: {},
+                advanced: { ...advancedColors },
+                preview: {
+                    titlebar: document.getElementById('titlebarColor').value,
+                    background: document.getElementById('bgColor').value,
+                    opacity: document.getElementById('bgOpacity').value
+                },
+                includeAdvanced: document.getElementById('includeAdvanced').checked
+            };
+
+            // Export all basic colors
+            for (const [key, setting] of Object.entries(colorSettings)) {
+                exportData.colors[key] = document.getElementById(setting.id).value;
+            }
+
+            const json = JSON.stringify(exportData, null, 2);
+            navigator.clipboard.writeText(json);
+            showToast('Settings exported to clipboard!');
+        }
+
+        // Open import modal
+        function openImportModal() {
+            document.getElementById('importModal').classList.add('show');
+            document.getElementById('importData').value = '';
+            document.getElementById('importError').classList.remove('show');
+            document.getElementById('importData').focus();
+        }
+
+        // Close import modal
+        function closeImportModal() {
+            document.getElementById('importModal').classList.remove('show');
+        }
+
+        // Load imported settings
+        function loadImportedSettings() {
+            const importText = document.getElementById('importData').value.trim();
+            const errorEl = document.getElementById('importError');
+
+            if (!importText) {
+                errorEl.textContent = 'Please paste your exported settings.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            try {
+                const data = JSON.parse(importText);
+
+                // Validate structure
+                if (!data.colors || typeof data.colors !== 'object') {
+                    throw new Error('Invalid format: missing colors data.');
+                }
+
+                // Load basic colors
+                for (const [key, setting] of Object.entries(colorSettings)) {
+                    if (data.colors[key]) {
+                        const color = data.colors[key];
+                        if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
+                            document.getElementById(setting.id).value = color;
+                            document.getElementById(setting.id + 'Text').value = color.toUpperCase();
+                        }
+                    }
+                }
+
+                // Load preview settings
+                if (data.preview) {
+                    if (data.preview.titlebar && /^#[0-9A-Fa-f]{6}$/.test(data.preview.titlebar)) {
+                        document.getElementById('titlebarColor').value = data.preview.titlebar;
+                        document.getElementById('titlebarColorText').value = data.preview.titlebar.toUpperCase();
+                    }
+                    if (data.preview.background && /^#[0-9A-Fa-f]{6}$/.test(data.preview.background)) {
+                        document.getElementById('bgColor').value = data.preview.background;
+                        document.getElementById('bgColorText').value = data.preview.background.toUpperCase();
+                    }
+                    if (data.preview.opacity) {
+                        document.getElementById('bgOpacity').value = data.preview.opacity;
+                        document.getElementById('opacityValue').textContent = data.preview.opacity + '%';
+                    }
+                }
+
+                // Load advanced colors
+                if (data.advanced) {
+                    for (const [emote, color] of Object.entries(data.advanced)) {
+                        if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
+                            advancedColors[emote] = color;
+                            const picker = document.getElementById(`adv_${emote}`);
+                            const text = document.getElementById(`adv_${emote}Text`);
+                            if (picker) picker.value = color;
+                            if (text) text.value = color.toUpperCase();
+                        }
+                    }
+                }
+
+                // Load checkbox state
+                if (data.includeAdvanced !== undefined) {
+                    document.getElementById('includeAdvanced').checked = data.includeAdvanced;
+                }
+
+                // Save to localStorage, update preview, and close modal
+                savePreferences();
+                renderChatPreview();
+                updateCommandOutput();
+                closeImportModal();
+                showToast('Settings imported successfully!');
+
+            } catch (e) {
+                errorEl.textContent = 'Error: ' + (e.message || 'Invalid JSON format.');
+                errorEl.classList.add('show');
+            }
+        }
+
+        // Close modal on outside click
+        document.getElementById('importModal').addEventListener('click', (e) => {
+            if (e.target.id === 'importModal') {
+                closeImportModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('importModal').classList.contains('show')) {
+                closeImportModal();
+            }
+        });
+
         // Save preferences to localStorage
         function savePreferences() {
             const prefs = {
@@ -1079,9 +1413,10 @@
         function initColorInputsWithSave() {
             const colorIds = [
                 'nameColor', 'dialogueColor', 'italicColor', 'boldColor',
-                'whisperColor', 'lowColor', 'sayColor', 'yellColor',
-                'meColor', 'doColor', 'oocColor', 'pmColor',
-                'factionColor', 'safehouseColor', 'generalColor', 'adminColor',
+                'whisperColor', 'lowColor', 'sayColor', 'longColor', 'yellColor',
+                'mewhisperColor', 'melowColor', 'menormalColor', 'melongColor',
+                'meColor', 'doColor', 'oocColor',
+                'pmColor', 'factionColor', 'safehouseColor', 'generalColor', 'adminColor',
                 'titlebarColor', 'bgColor'
             ];
             colorIds.forEach(id => {
@@ -1106,6 +1441,10 @@
 
         // Reset button
         document.getElementById('resetBtn').addEventListener('click', resetToDefaults);
+
+        // Export and Import buttons
+        document.getElementById('exportBtn').addEventListener('click', exportSettings);
+        document.getElementById('importBtn').addEventListener('click', openImportModal);
     </script>
 </body>
 </html>

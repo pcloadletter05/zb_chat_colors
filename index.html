@@ -82,10 +82,12 @@
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
+            opacity: 1;
         }
         .color-row input[type="color"]::-moz-color-swatch {
             border: none;
             border-radius: 4px;
+            opacity: 1;
         }
         .color-row input[type="color"]::-webkit-color-swatch-wrapper {
             padding: 0;
@@ -246,10 +248,12 @@
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
+            opacity: 1;
         }
         .setting-row input[type="color"]::-moz-color-swatch {
             border: none;
             border-radius: 4px;
+            opacity: 1;
         }
         .setting-row input[type="color"]::-webkit-color-swatch-wrapper {
             padding: 0;
@@ -380,10 +384,12 @@
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
+            opacity: 1;
         }
         .advanced-row input[type="color"]::-moz-color-swatch {
             border: none;
             border-radius: 3px;
+            opacity: 1;
         }
         .advanced-row input[type="color"]::-webkit-color-swatch-wrapper {
             padding: 0;
@@ -434,8 +440,8 @@
                 <h3>Your Name</h3>
                 <div class="color-row">
                     <label>Name Color</label>
-                    <input type="color" id="nameColor" value="#7E7779">
-                    <input type="text" id="nameColorText" value="#7E7779">
+                    <input type="color" id="nameColor" value="#FEFEFE">
+                    <input type="text" id="nameColorText" value="#FEFEFE">
                     <button class="copy-btn" onclick="copyCommand('color')">Copy</button>
                 </div>
             </div>
@@ -652,7 +658,7 @@
 
         // Default values for reset
         const defaultColors = {
-            nameColor: '#7E7779',
+            nameColor: '#FEFEFE',
             dialogueColor: '#FEFEFE',
             italicColor: '#ADD4A0',
             boldColor: '#C3A4CF',
@@ -811,19 +817,19 @@
             preview.innerHTML = `
                 <div class="chat-message">
                     <span class="timestamp">[12:00]</span>
-                    <span style="color: ${whisperColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> whispers: Hey, over here...</span>
+                    <span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span style="color: #919191">whispers,</span> <span style="color: ${whisperColor}">"Hey, over here..."</span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:01]</span>
-                    <span style="color: ${lowColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> says quietly: I found some supplies.</span>
+                    <span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span style="color: #919191">says quietly,</span> <span style="color: ${lowColor}">"I found some supplies."</span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:02]</span>
-                    <span style="color: ${sayColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> says: Hello there, fellow survivor!</span>
+                    <span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span style="color: #919191">says,</span> <span style="color: ${sayColor}">"Hello there, fellow survivor!"</span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:03]</span>
-                    <span style="color: ${yellColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> yells: WATCH OUT, ZOMBIES!</span>
+                    <span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span style="color: #919191">yells,</span> <span style="color: ${yellColor}">"WATCH OUT, ZOMBIES!"</span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:04]</span>

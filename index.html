@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TICS Chat Color Picker - Project Zomboid</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
             background: #1a1a2e;
             color: #eee;
             margin: 0;
@@ -98,17 +101,66 @@
         .color-row .copy-btn:hover {
             background: #5a6578;
         }
-        .chat-preview {
+        .chat-window {
             border-radius: 10px;
+            overflow: hidden;
+        }
+        .chat-titlebar {
+            padding: 10px 15px;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+        .chat-titlebar .hex-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chat-titlebar .hex-display span {
+            color: #aaa;
+        }
+        .bg-hex-display {
+            padding: 10px 0;
+            font-size: 13px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 8px;
+        }
+        .bg-hex-display span {
+            color: #aaa;
+        }
+        .hex-display code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.85em;
+        }
+        .hex-display .copy-btn-small {
+            padding: 2px 8px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 3px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.75em;
+        }
+        .hex-display .copy-btn-small:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .chat-preview {
             padding: 15px;
-            font-family: 'Courier New', monospace;
+            font-family: 'Corbel', sans-serif;
+            font-weight: bold;
             font-size: 14px;
             line-height: 1.6;
             min-height: 400px;
             max-height: 600px;
             overflow-y: auto;
         }
-        .chat-message {
+                .chat-message {
             margin-bottom: 4px;
             word-wrap: break-word;
         }
@@ -133,6 +185,8 @@
             font-size: 0.9em;
             white-space: pre-wrap;
             word-break: break-all;
+            max-height: 300px;
+            overflow-y: auto;
         }
         .copy-all-btn {
             margin-top: 10px;
@@ -147,22 +201,41 @@
         .copy-all-btn:hover {
             background: #45a049;
         }
-        .bg-settings {
+        .preview-settings {
+            background: #16213e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .preview-settings h2 {
+            margin-bottom: 15px;
+        }
+        .setting-row {
             display: flex;
             gap: 15px;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             flex-wrap: wrap;
         }
-        .bg-settings label {
+        .setting-row label {
             font-size: 0.9em;
+            min-width: 80px;
         }
-        .bg-settings input[type="range"] {
+        .setting-row input[type="color"] {
+            width: 40px;
+            height: 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: none;
+        }
+        .setting-row input[type="range"] {
             width: 100px;
         }
         .opacity-value {
             font-family: monospace;
             color: #888;
+            min-width: 40px;
         }
         .section-divider {
             border-top: 1px solid #333;
@@ -184,8 +257,111 @@
         .copied-toast.show {
             opacity: 1;
         }
-        .italic { font-style: italic; }
         .bold { font-weight: bold; }
+
+        /* Advanced Section Styles */
+        .advanced-section {
+            background: #16213e;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        .advanced-header {
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1a2744;
+            user-select: none;
+        }
+        .advanced-header:hover {
+            background: #1e2d4d;
+        }
+        .advanced-header h2 {
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+        .advanced-toggle {
+            font-size: 1.2em;
+            transition: transform 0.3s;
+        }
+        .advanced-toggle.open {
+            transform: rotate(180deg);
+        }
+        .advanced-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .advanced-content.open {
+            max-height: 2000px;
+        }
+        .advanced-inner {
+            padding: 20px;
+        }
+        .advanced-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .advanced-group {
+            background: #0f1829;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .advanced-group h4 {
+            margin: 0 0 12px 0;
+            color: #aaa;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .advanced-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            gap: 8px;
+        }
+        .advanced-row label {
+            width: 90px;
+            font-size: 0.85em;
+            color: #ccc;
+        }
+        .advanced-row input[type="color"] {
+            width: 32px;
+            height: 24px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            background: none;
+        }
+        .advanced-row input[type="text"] {
+            width: 70px;
+            padding: 3px 6px;
+            border: 1px solid #333;
+            border-radius: 3px;
+            background: #0f0f23;
+            color: #fff;
+            font-family: monospace;
+            font-size: 0.8em;
+        }
+        .advanced-row .copy-btn {
+            padding: 3px 8px;
+            font-size: 0.75em;
+        }
+        .include-advanced {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        .include-advanced input {
+            width: 16px;
+            height: 16px;
+        }
     </style>
 </head>
 <body>
@@ -317,24 +493,65 @@
         </div>
 
         <div class="preview-panel">
-            <div style="background: #16213e; border-radius: 10px; padding: 20px;">
-                <h2>Live Preview</h2>
-                <div class="bg-settings">
+            <div class="preview-settings">
+                <h2>Preview Settings</h2>
+                <div class="setting-row">
+                    <label>Title Bar:</label>
+                    <input type="color" id="titlebarColor" value="#2d2d2d">
+                    <input type="text" id="titlebarColorText" value="#2D2D2D" style="width: 80px; padding: 5px 8px; border: 1px solid #333; border-radius: 4px; background: #0f0f23; color: #fff; font-family: monospace; font-size: 0.85em;">
+                </div>
+                <div class="setting-row">
                     <label>Background:</label>
                     <input type="color" id="bgColor" value="#000000">
-                    <label>Opacity:</label>
+                    <input type="text" id="bgColorText" value="#000000" style="width: 80px; padding: 5px 8px; border: 1px solid #333; border-radius: 4px; background: #0f0f23; color: #fff; font-family: monospace; font-size: 0.85em;">
+                    <label style="min-width: auto;">Opacity:</label>
                     <input type="range" id="bgOpacity" min="0" max="100" value="75">
                     <span class="opacity-value" id="opacityValue">75%</span>
+                </div>
+            </div>
+
+            <div class="chat-window" id="chatWindow">
+                <div class="chat-titlebar" id="chatTitlebar">
+                    <span>Chat</span>
+                    <div class="hex-display">
+                        <code id="titlebarHex">#2D2D2D</code>
+                        <button class="copy-btn-small" onclick="copyHex('titlebar')">Copy</button>
+                    </div>
                 </div>
                 <div class="chat-preview" id="chatPreview">
                     <!-- Chat messages will be rendered here -->
                 </div>
             </div>
+            <div class="bg-hex-display">
+                <span>Background:</span>
+                <code id="bgHex">#000000 @ 75%</code>
+                <button class="copy-btn-small" onclick="copyHex('bg')">Copy</button>
+            </div>
 
             <div class="commands-section">
                 <h2>All Commands</h2>
                 <div class="command-output" id="commandOutput"></div>
+                <label class="include-advanced">
+                    <input type="checkbox" id="includeAdvanced">
+                    Include advanced emote colors in commands
+                </label>
                 <button class="copy-all-btn" onclick="copyAllCommands()">Copy All Commands</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Section -->
+    <div class="advanced-section" style="max-width: 1400px; margin: 20px auto 0;">
+        <div class="advanced-header" onclick="toggleAdvanced()">
+            <h2>Advanced Emote Colors</h2>
+            <span class="advanced-toggle" id="advancedToggle">▼</span>
+        </div>
+        <div class="advanced-content" id="advancedContent">
+            <div class="advanced-inner">
+                <p style="color: #888; margin-bottom: 20px;">Fine-tune colors for specific message lengths and variations. These override the basic emote colors above.</p>
+                <div class="advanced-grid" id="advancedGrid">
+                    <!-- Generated by JavaScript -->
+                </div>
             </div>
         </div>
     </div>
@@ -342,7 +559,7 @@
     <div class="copied-toast" id="toast">Copied to clipboard!</div>
 
     <script>
-        // Color settings with their IDs and command mappings
+        // Basic color settings with their IDs and command mappings
         const colorSettings = {
             name: { id: 'nameColor', command: 'color' },
             dialogue: { id: 'dialogueColor', command: 'dc' },
@@ -362,6 +579,25 @@
             admin: { id: 'adminColor', command: 'emotecolor admin' }
         };
 
+        // Advanced emote color variants
+        const advancedEmotes = {
+            'Whisper': ['whispershort', 'whispernormal', 'whisperlong', 'whisperdo'],
+            'Low': ['lowshort', 'lownormal', 'lowlong', 'lowdo'],
+            'Say': ['sayshort', 'saynormal', 'saylong', 'saydo'],
+            'Yell': ['yellshort', 'yellnormal', 'yelllong', 'yelldo'],
+            'Me': ['meshort', 'menormal', 'melong'],
+            'Do': ['doshort', 'donormal', 'dolong'],
+            'OOC': ['oocshort', 'oocnormal', 'ooclong'],
+            'PM': ['pmshort', 'pmnormal', 'pmlong'],
+            'Faction': ['factionshort', 'factionnormal', 'factionlong'],
+            'Safehouse': ['safehouseshort', 'safehousenormal', 'safehouselong'],
+            'General': ['generalshort', 'generalnormal', 'generallong'],
+            'Admin': ['adminshort', 'adminnormal', 'adminlong', 'admindoshort', 'admindonormal', 'admindolong']
+        };
+
+        // Store advanced color values
+        const advancedColors = {};
+
         // Helper to convert hex to RGB string
         function hexToRgb(hex) {
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -377,6 +613,18 @@
             toast.textContent = message;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // Copy hex value
+        function copyHex(type) {
+            let hex;
+            if (type === 'titlebar') {
+                hex = document.getElementById('titlebarColor').value.toUpperCase();
+            } else {
+                hex = document.getElementById('bgColor').value.toUpperCase();
+            }
+            navigator.clipboard.writeText(hex);
+            showToast(`Copied: ${hex}`);
         }
 
         // Copy a single command
@@ -399,6 +647,15 @@
             showToast(`Copied: ${command}`);
         }
 
+        // Copy advanced command
+        function copyAdvancedCommand(emoteType) {
+            const color = advancedColors[emoteType] || '#FFFFFF';
+            const rgb = hexToRgb(color);
+            const command = `/emotecolor ${emoteType} ${rgb}`;
+            navigator.clipboard.writeText(command);
+            showToast(`Copied: ${command}`);
+        }
+
         // Generate all commands
         function generateAllCommands() {
             const commands = [];
@@ -407,6 +664,17 @@
                 const rgb = hexToRgb(colorInput.value);
                 commands.push(`/${setting.command} ${rgb}`);
             }
+
+            // Include advanced if checkbox is checked
+            if (document.getElementById('includeAdvanced').checked) {
+                for (const [emoteType, color] of Object.entries(advancedColors)) {
+                    if (color && color !== '#FFFFFF') {
+                        const rgb = hexToRgb(color);
+                        commands.push(`/emotecolor ${emoteType} ${rgb}`);
+                    }
+                }
+            }
+
             return commands.join('\n');
         }
 
@@ -427,12 +695,23 @@
             const preview = document.getElementById('chatPreview');
             const bgColor = document.getElementById('bgColor').value;
             const bgOpacity = document.getElementById('bgOpacity').value / 100;
+            const titlebarColor = document.getElementById('titlebarColor').value;
 
-            // Convert hex to rgba
+            // Update titlebar
+            document.getElementById('chatTitlebar').style.background = titlebarColor;
+            document.getElementById('titlebarHex').textContent = titlebarColor.toUpperCase();
+            document.getElementById('titlebarColorText').value = titlebarColor.toUpperCase();
+
+            
+            // Convert hex to rgba for chat background
             const r = parseInt(bgColor.slice(1, 3), 16);
             const g = parseInt(bgColor.slice(3, 5), 16);
             const b = parseInt(bgColor.slice(5, 7), 16);
             preview.style.background = `rgba(${r}, ${g}, ${b}, ${bgOpacity})`;
+
+            // Update bg hex display
+            document.getElementById('bgHex').textContent = `${bgColor.toUpperCase()} @ ${Math.round(bgOpacity * 100)}%`;
+            document.getElementById('bgColorText').value = bgColor.toUpperCase();
 
             const nameColor = document.getElementById('nameColor').value;
             const dialogueColor = document.getElementById('dialogueColor').value;
@@ -473,7 +752,7 @@
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:04]</span>
-                    <span style="color: ${meColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span class="italic" style="color: ${italicColor}">*looks around nervously*</span> <span style="color: ${dialogueColor}">"Is anyone there?"</span></span>
+                    <span style="color: ${meColor}"><span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span style="color: ${italicColor}">*looks around nervously*</span> <span style="color: ${dialogueColor}">"Is anyone there?"</span></span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:05]</span>
@@ -515,6 +794,8 @@
             const colorPicker = document.getElementById(colorId);
             const textInput = document.getElementById(colorId + 'Text');
 
+            if (!colorPicker || !textInput) return;
+
             colorPicker.addEventListener('input', () => {
                 textInput.value = colorPicker.value.toUpperCase();
                 renderChatPreview();
@@ -542,20 +823,73 @@
                 'nameColor', 'dialogueColor', 'italicColor', 'boldColor',
                 'whisperColor', 'lowColor', 'sayColor', 'yellColor',
                 'meColor', 'doColor', 'oocColor', 'pmColor',
-                'factionColor', 'safehouseColor', 'generalColor', 'adminColor'
+                'factionColor', 'safehouseColor', 'generalColor', 'adminColor',
+                'titlebarColor', 'bgColor'
             ];
             colorIds.forEach(syncColorInputs);
         }
 
+        // Toggle advanced section
+        function toggleAdvanced() {
+            const content = document.getElementById('advancedContent');
+            const toggle = document.getElementById('advancedToggle');
+            content.classList.toggle('open');
+            toggle.classList.toggle('open');
+        }
+
+        // Generate advanced emote color inputs
+        function generateAdvancedInputs() {
+            const grid = document.getElementById('advancedGrid');
+            let html = '';
+
+            for (const [group, emotes] of Object.entries(advancedEmotes)) {
+                html += `<div class="advanced-group"><h4>${group}</h4>`;
+                for (const emote of emotes) {
+                    const displayName = emote.replace(group.toLowerCase(), '');
+                    advancedColors[emote] = '#FFFFFF';
+                    html += `
+                        <div class="advanced-row">
+                            <label>${displayName || 'base'}</label>
+                            <input type="color" id="adv_${emote}" value="#FFFFFF" onchange="updateAdvancedColor('${emote}', this.value)">
+                            <input type="text" id="adv_${emote}Text" value="#FFFFFF" onchange="updateAdvancedColorFromText('${emote}', this.value)">
+                            <button class="copy-btn" onclick="copyAdvancedCommand('${emote}')">Copy</button>
+                        </div>
+                    `;
+                }
+                html += '</div>';
+            }
+
+            grid.innerHTML = html;
+        }
+
+        // Update advanced color
+        function updateAdvancedColor(emoteType, value) {
+            advancedColors[emoteType] = value;
+            document.getElementById(`adv_${emoteType}Text`).value = value.toUpperCase();
+            updateCommandOutput();
+        }
+
+        // Update advanced color from text input
+        function updateAdvancedColorFromText(emoteType, value) {
+            if (!value.startsWith('#')) value = '#' + value;
+            if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+                advancedColors[emoteType] = value;
+                document.getElementById(`adv_${emoteType}`).value = value;
+                updateCommandOutput();
+            }
+        }
+
         // Background settings listeners
-        document.getElementById('bgColor').addEventListener('input', renderChatPreview);
         document.getElementById('bgOpacity').addEventListener('input', (e) => {
             document.getElementById('opacityValue').textContent = e.target.value + '%';
             renderChatPreview();
         });
 
+        document.getElementById('includeAdvanced').addEventListener('change', updateCommandOutput);
+
         // Initialize
         initColorInputs();
+        generateAdvancedInputs();
         renderChatPreview();
         updateCommandOutput();
     </script>

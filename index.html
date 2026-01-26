@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Tippy.js for tooltips -->
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -538,15 +541,31 @@
             padding: 15px 20px;
             border-top: 1px solid #333;
         }
+
+        /* Tippy.js custom theme */
+        .tippy-box[data-theme~='custom'] {
+            background-color: #1a2744;
+            color: #eee;
+            font-size: 0.85em;
+            border: 1px solid #333;
+            border-radius: 6px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+        }
+        .tippy-box[data-theme~='custom'] .tippy-arrow {
+            color: #1a2744;
+        }
+        .tippy-box[data-theme~='custom'] .tippy-content {
+            padding: 8px 12px;
+        }
     </style>
 </head>
 <body>
     <h1>TICS Chat Color Picker</h1>
     <p class="subtitle">Total Immersive Chat System - Project Zomboid</p>
     <div style="text-align: center; margin-bottom: 20px; display: flex; gap: 10px; justify-content: center;">
-        <button id="exportBtn" class="action-btn export-btn">Export</button>
-        <button id="importBtn" class="action-btn import-btn">Import</button>
-        <button id="resetBtn" class="reset-btn">Reset to Defaults</button>
+        <button id="exportBtn" class="action-btn export-btn" data-tippy-content="Copy all settings as JSON to clipboard">Export</button>
+        <button id="importBtn" class="action-btn import-btn" data-tippy-content="Load settings from exported JSON">Import</button>
+        <button id="resetBtn" class="reset-btn" data-tippy-content="Reset all colors to default values">Reset to Defaults</button>
     </div>
 
     <!-- Import Modal -->
@@ -575,7 +594,7 @@
             <div class="color-group">
                 <h3>Your Name</h3>
                 <div class="color-row">
-                    <label>Name Color</label>
+                    <label data-tippy-content="Your character's name color as it appears in chat.">Name Color</label>
                     <input type="color" id="nameColor" value="#FEFEFE">
                     <input type="text" id="nameColorText" value="#FEFEFE">
                     <button class="copy-btn" onclick="copyCommand('color')">Copy</button>
@@ -585,19 +604,19 @@
             <div class="color-group">
                 <h3>Text Formatting</h3>
                 <div class="color-row">
-                    <label>Dialogue " "</label>
+                    <label data-tippy-content="Color of spoken dialogue inside quotation marks.">Dialogue " "</label>
                     <input type="color" id="dialogueColor" value="#FEFEFE">
                     <input type="text" id="dialogueColorText" value="#FEFEFE">
                     <button class="copy-btn" onclick="copyCommand('dc')">Copy</button>
                 </div>
                 <div class="color-row">
-                    <label>Italics *text*</label>
+                    <label data-tippy-content="Color of italic text wrapped in single asterisks *like this*.">Italics *text*</label>
                     <input type="color" id="italicColor" value="#ADD4A0">
                     <input type="text" id="italicColorText" value="#ADD4A0">
                     <button class="copy-btn" onclick="copyCommand('ic')">Copy</button>
                 </div>
                 <div class="color-row">
-                    <label>Bold **text**</label>
+                    <label data-tippy-content="Color of bold text wrapped in double asterisks **like this**.">Bold **text**</label>
                     <input type="color" id="boldColor" value="#C3A4CF">
                     <input type="text" id="boldColorText" value="#C3A4CF">
                     <button class="copy-btn" onclick="copyCommand('bc')">Copy</button>
@@ -610,31 +629,31 @@
             <div class="color-group">
                 <h3>Voice Channels</h3>
                 <div class="color-row">
-                    <label>/whisper</label>
+                    <label data-tippy-content="Whisper range (~1 tile). Very quiet, only nearby players can hear.">/whisper</label>
                     <input type="color" id="whisperColor" value="#B4FFC5">
                     <input type="text" id="whisperColorText" value="#B4FFC5">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'whisper')">Copy</button>
                 </div>
                 <div class="color-row">
-                    <label>/low</label>
+                    <label data-tippy-content="Low voice range (~3 tiles). Quiet speech for close conversations.">/low</label>
                     <input type="color" id="lowColor" value="#B4FFFF">
                     <input type="text" id="lowColorText" value="#B4FFFF">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'low')">Copy</button>
                 </div>
                 <div class="color-row">
-                    <label>/say</label>
+                    <label data-tippy-content="Normal speaking voice (~10 tiles). Default conversation range.">/say</label>
                     <input type="color" id="sayColor" value="#FEFEFE">
                     <input type="text" id="sayColorText" value="#FEFEFE">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'say')">Copy</button>
                 </div>
                 <div class="color-row">
-                    <label>/long</label>
+                    <label data-tippy-content="Long range voice (~20 tiles). Shouting to be heard at a distance.">/long</label>
                     <input type="color" id="longColor" value="#FFD699">
                     <input type="text" id="longColorText" value="#FFD699">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'long')">Copy</button>
                 </div>
                 <div class="color-row">
-                    <label>/yell</label>
+                    <label data-tippy-content="Yelling range (~30 tiles). Loud yelling, may attract zombies!">/yell</label>
                     <input type="color" id="yellColor" value="#E69696">
                     <input type="text" id="yellColorText" value="#E69696">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'yell')">Copy</button>
@@ -644,25 +663,25 @@
             <div class="color-group">
                 <h3>Voice Me</h3>
                 <div class="color-row">
-                    <label>/mewhisper</label>
+                    <label data-tippy-content="Emote at whisper range. Actions only visible to players very close by.">/mewhisper</label>
                     <input type="color" id="mewhisperColor" value="#B4FFC5">
                     <input type="text" id="mewhisperColorText" value="#B4FFC5">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'mewhisper')">Copy</button>
                 </div>
                 <div class="color-row">
-                    <label>/melow</label>
+                    <label data-tippy-content="Emote at low voice range. Subtle actions for nearby players.">/melow</label>
                     <input type="color" id="melowColor" value="#B4FFFF">
                     <input type="text" id="melowColorText" value="#B4FFFF">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'melow')">Copy</button>
                 </div>
                 <div class="color-row">
-                    <label>/me</label>
+                    <label data-tippy-content="Standard emote at normal speaking range.">/me</label>
                     <input type="color" id="menormalColor" value="#DFFDFF">
                     <input type="text" id="menormalColorText" value="#DFFDFF">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'menormal')">Copy</button>
                 </div>
                 <div class="color-row">
-                    <label>/melong</label>
+                    <label data-tippy-content="Emote at long range. Visible actions like waving or signaling.">/melong</label>
                     <input type="color" id="melongColor" value="#FFD699">
                     <input type="text" id="melongColorText" value="#FFD699">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'melong')">Copy</button>
@@ -672,19 +691,19 @@
             <div class="color-group">
                 <h3>Roleplay Channels</h3>
                 <div class="color-row">
-                    <label>/me</label>
+                    <label data-tippy-content="Character actions and emotes. Describes what your character is doing.">/me</label>
                     <input type="color" id="meColor" value="#DFFDFF">
                     <input type="text" id="meColorText" value="#DFFDFF">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'me')">Copy</button>
                 </div>
                 <div class="color-row">
-                    <label>/do</label>
+                    <label data-tippy-content="Environment descriptions. Describes surroundings or events, not character actions.">/do</label>
                     <input type="color" id="doColor" value="#E1DFFF">
                     <input type="text" id="doColorText" value="#E1DFFF">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'do')">Copy</button>
                 </div>
                 <div class="color-row">
-                    <label>/ooc</label>
+                    <label data-tippy-content="Out of Character. Talk as yourself, not your character.">/ooc</label>
                     <input type="color" id="oocColor" value="#92FF94">
                     <input type="text" id="oocColorText" value="#92FF94">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'ooc')">Copy</button>
@@ -694,31 +713,31 @@
             <div class="color-group">
                 <h3>Group Channels</h3>
                 <div class="color-row">
-                    <label>/pm</label>
+                    <label data-tippy-content="Private Messages. Direct messages to a specific player.">/pm</label>
                     <input type="color" id="pmColor" value="#FFB8DA">
                     <input type="text" id="pmColorText" value="#FFB8DA">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'pm')">Copy</button>
                 </div>
                 <div class="color-row">
-                    <label>/faction</label>
+                    <label data-tippy-content="Faction chat. Only members of your faction can see these messages.">/faction</label>
                     <input type="color" id="factionColor" value="#AAFFAA">
                     <input type="text" id="factionColorText" value="#AAFFAA">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'faction')">Copy</button>
                 </div>
                 <div class="color-row">
-                    <label>/safehouse</label>
+                    <label data-tippy-content="Safehouse chat. Only players in your safehouse can see these messages.">/safehouse</label>
                     <input type="color" id="safehouseColor" value="#FFFF60">
                     <input type="text" id="safehouseColorText" value="#FFFF60">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'safehouse')">Copy</button>
                 </div>
                 <div class="color-row">
-                    <label>/general</label>
+                    <label data-tippy-content="General/Global chat. Server-wide messages visible to all players.">/general</label>
                     <input type="color" id="generalColor" value="#BEBEFF">
                     <input type="text" id="generalColorText" value="#BEBEFF">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'general')">Copy</button>
                 </div>
                 <div class="color-row">
-                    <label>/admin</label>
+                    <label data-tippy-content="Admin messages. Server announcements and admin communications.">/admin</label>
                     <input type="color" id="adminColor" value="#FFAAAA">
                     <input type="text" id="adminColorText" value="#FFAAAA">
                     <button class="copy-btn" onclick="copyCommand('emotecolor', 'admin')">Copy</button>
@@ -1445,6 +1464,15 @@
         // Export and Import buttons
         document.getElementById('exportBtn').addEventListener('click', exportSettings);
         document.getElementById('importBtn').addEventListener('click', openImportModal);
+
+        // Initialize Tippy.js tooltips
+        tippy('[data-tippy-content]', {
+            theme: 'custom',
+            placement: 'top',
+            arrow: true,
+            delay: [200, 0],
+            duration: [200, 150]
+        });
     </script>
 </body>
 </html>

@@ -594,16 +594,157 @@
         .tippy-box[data-theme~='custom'] .tippy-content {
             padding: 8px 12px;
         }
+
+        /* Preview Banner */
+        .preview-banner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #2d6a4f 0%, #1d4e89 100%);
+            color: white;
+            padding: 12px 20px;
+            z-index: 3000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        .preview-banner.visible {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .preview-banner-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .preview-banner-name {
+            font-weight: bold;
+        }
+        .preview-banner-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .preview-banner .btn-apply {
+            background: #4CAF50;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .preview-banner .btn-apply:hover {
+            background: #45a049;
+        }
+        .preview-banner .btn-cancel {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+        }
+        .preview-banner .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .preview-banner .btn-browse {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+        }
+        .preview-banner .btn-browse:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        body.preview-mode {
+            padding-top: 70px;
+        }
+
+        /* Theme Library Modal */
+        .theme-modal .modal-content {
+            max-width: 700px;
+        }
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .theme-card {
+            background: #0f1829;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .theme-card:hover {
+            border-color: #4a5568;
+            transform: translateY(-2px);
+        }
+        .theme-card.selected {
+            border-color: #4CAF50;
+        }
+        .theme-card-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        .theme-card-swatches {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .theme-swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .theme-card-description {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        /* Share button */
+        .share-btn {
+            background: #6b46c1;
+        }
+        .share-btn:hover {
+            background: #805ad5;
+        }
     </style>
 </head>
 <body>
+    <!-- Preview Banner -->
+    <div class="preview-banner" id="previewBanner">
+        <div class="preview-banner-text">
+            <span>Previewing:</span>
+            <span class="preview-banner-name" id="previewThemeName">Theme Name</span>
+        </div>
+        <div class="preview-banner-actions">
+            <button class="btn-apply" onclick="applyPreview()">Apply Theme</button>
+            <button class="btn-cancel" onclick="cancelPreview()">Keep My Colors</button>
+            <button class="btn-browse" onclick="openThemeLibrary()" id="browseMoreBtn" style="display: none;">Browse More</button>
+        </div>
+    </div>
+
     <h1>TICS Chat Color Picker</h1>
     <p class="subtitle">Total Immersive Chat System - Project Zomboid</p>
-    <div style="text-align: center; margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; align-items: center;">
+    <div style="text-align: center; margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap;">
+        <button id="themesBtn" class="action-btn share-btn" data-tippy-content="Browse pre-made color themes">Themes</button>
+        <button id="shareBtn" class="action-btn share-btn" data-tippy-content="Generate a shareable link to your theme">Share</button>
+        <span style="color: #666;">|</span>
         <button id="exportBtn" class="action-btn export-btn" data-tippy-content="Copy all settings as JSON to clipboard">Export</button>
         <button id="importBtn" class="action-btn import-btn" data-tippy-content="Load settings from exported JSON">Import</button>
         <button id="resetBtn" class="reset-btn" data-tippy-content="Reset all colors to default values">Reset to Defaults</button>
-        <span style="color: #666; margin-left: 10px;">|</span>
+        <span style="color: #666;">|</span>
         <a href="#" id="changelogLink" style="color: #888; font-size: 0.85em; text-decoration: none;" data-tippy-content="View recent updates">Changelog</a>
     </div>
 
@@ -635,6 +776,25 @@
             </div>
             <div class="modal-body" id="changelogBody" style="max-height: 400px; overflow-y: auto;">
                 <!-- Changelog entries rendered by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Library Modal -->
+    <div id="themeModal" class="modal theme-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Theme Library</h2>
+                <button class="modal-close" onclick="closeThemeLibrary()">&times;</button>
+            </div>
+            <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
+                <p>Click a theme to preview it. Your current colors are saved and will be restored if you cancel.</p>
+                <div class="theme-grid" id="themeGrid">
+                    <!-- Theme cards rendered by JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn" onclick="closeThemeLibraryAndRestore()">Close</button>
             </div>
         </div>
     </div>
@@ -1418,11 +1578,24 @@
                 if (document.getElementById('changelogModal').classList.contains('show')) {
                     closeChangelogModal();
                 }
+                if (document.getElementById('themeModal').classList.contains('show')) {
+                    closeThemeLibraryAndRestore();
+                }
             }
         });
 
         // Changelog data - add new entries at the top
         const changelog = [
+            {
+                version: '1.2.0',
+                date: '2026-01-26',
+                changes: [
+                    'Added Theme Library with pre-made color schemes',
+                    'Added Share button to generate shareable links',
+                    'Preview mode: try themes before applying them',
+                    'Shared links open in preview mode to protect your work'
+                ]
+            },
             {
                 version: '1.1.0',
                 date: '2026-01-26',
@@ -1447,6 +1620,390 @@
                 ]
             }
         ];
+
+        // ========================================
+        // Theme Library & Preview Mode
+        // ========================================
+
+        // Pre-made themes
+        const themeLibrary = {
+            default: {
+                name: 'TICS Default',
+                description: 'The standard TICS color scheme',
+                colors: {
+                    name: '#FEFEFE', dialogue: '#FEFEFE', italic: '#ADD4A0', bold: '#C3A4CF',
+                    whisper: '#B4FFC5', low: '#B4FFFF', say: '#FEFEFE', long: '#FFD699', yell: '#E69696',
+                    me: '#DFFDFF', do: '#E1DFFF', ooc: '#92FF94',
+                    mewhisper: '#B4FFC5', melow: '#B4FFFF', menormal: '#DFFDFF', melong: '#FFD699',
+                    pm: '#FFB8DA', faction: '#AAFFAA', safehouse: '#FFFF60', general: '#BEBEFF', admin: '#FFAAAA'
+                }
+            },
+            neon: {
+                name: 'Neon Nights',
+                description: 'Vibrant cyberpunk-inspired colors',
+                colors: {
+                    name: '#00FF88', dialogue: '#FFFFFF', italic: '#FF00FF', bold: '#00FFFF',
+                    whisper: '#00FF88', low: '#00FFAA', say: '#00FFFF', long: '#FFFF00', yell: '#FF0066',
+                    me: '#00FFFF', do: '#FF00FF', ooc: '#00FF00',
+                    mewhisper: '#00FF88', melow: '#00FFAA', menormal: '#00FFFF', melong: '#FFFF00',
+                    pm: '#FF69B4', faction: '#00FF00', safehouse: '#FFFF00', general: '#00BFFF', admin: '#FF4444'
+                }
+            },
+            sunset: {
+                name: 'Sunset',
+                description: 'Warm oranges and soft pinks',
+                colors: {
+                    name: '#FFB366', dialogue: '#FFF5E6', italic: '#FF9999', bold: '#FFD700',
+                    whisper: '#FFCC99', low: '#FFB380', say: '#FFF0E0', long: '#FF9966', yell: '#FF6633',
+                    me: '#FFE4CC', do: '#FFCCB3', ooc: '#FFD9B3',
+                    mewhisper: '#FFCC99', melow: '#FFB380', menormal: '#FFE4CC', melong: '#FF9966',
+                    pm: '#FFB3D9', faction: '#FFCC80', safehouse: '#FFE066', general: '#FFB399', admin: '#FF8080'
+                }
+            },
+            ocean: {
+                name: 'Deep Ocean',
+                description: 'Cool blues and aqua tones',
+                colors: {
+                    name: '#66D9FF', dialogue: '#E6FFFF', italic: '#99FFCC', bold: '#66B3FF',
+                    whisper: '#80FFEA', low: '#66FFD9', say: '#CCFFFF', long: '#66B3FF', yell: '#3399FF',
+                    me: '#99FFFF', do: '#B3E6FF', ooc: '#80FFD4',
+                    mewhisper: '#80FFEA', melow: '#66FFD9', menormal: '#99FFFF', melong: '#66B3FF',
+                    pm: '#B3D9FF', faction: '#80FFBF', safehouse: '#99FFFF', general: '#99CCFF', admin: '#6699FF'
+                }
+            },
+            forest: {
+                name: 'Forest',
+                description: 'Natural greens and earth tones',
+                colors: {
+                    name: '#90EE90', dialogue: '#F0FFF0', italic: '#98FB98', bold: '#8FBC8F',
+                    whisper: '#98FB98', low: '#90EE90', say: '#E8F5E9', long: '#DAA520', yell: '#CD853F',
+                    me: '#B2DFDB', do: '#C8E6C9', ooc: '#A5D6A7',
+                    mewhisper: '#98FB98', melow: '#90EE90', menormal: '#B2DFDB', melong: '#DAA520',
+                    pm: '#F0E68C', faction: '#8FBC8F', safehouse: '#BDB76B', general: '#9ACD32', admin: '#DEB887'
+                }
+            },
+            pastel: {
+                name: 'Pastel Dream',
+                description: 'Soft, easy-on-the-eyes pastels',
+                colors: {
+                    name: '#FFB3BA', dialogue: '#FFFEF0', italic: '#BAFFC9', bold: '#BAE1FF',
+                    whisper: '#E2F0CB', low: '#B5EAD7', say: '#FFEFD5', long: '#FFDAC1', yell: '#FFB7B2',
+                    me: '#C7CEEA', do: '#E2F0CB', ooc: '#B5EAD7',
+                    mewhisper: '#E2F0CB', melow: '#B5EAD7', menormal: '#C7CEEA', melong: '#FFDAC1',
+                    pm: '#FFB3DE', faction: '#BAFFC9', safehouse: '#FFFFBA', general: '#BAE1FF', admin: '#FFB3BA'
+                }
+            },
+            monochrome: {
+                name: 'Monochrome',
+                description: 'Clean grayscale palette',
+                colors: {
+                    name: '#FFFFFF', dialogue: '#F0F0F0', italic: '#CCCCCC', bold: '#FFFFFF',
+                    whisper: '#AAAAAA', low: '#BBBBBB', say: '#DDDDDD', long: '#EEEEEE', yell: '#FFFFFF',
+                    me: '#D0D0D0', do: '#C0C0C0', ooc: '#B0B0B0',
+                    mewhisper: '#AAAAAA', melow: '#BBBBBB', menormal: '#D0D0D0', melong: '#EEEEEE',
+                    pm: '#E0E0E0', faction: '#CCCCCC', safehouse: '#DDDDDD', general: '#C8C8C8', admin: '#F5F5F5'
+                }
+            },
+            highContrast: {
+                name: 'High Contrast',
+                description: 'Maximum readability',
+                colors: {
+                    name: '#FFFF00', dialogue: '#FFFFFF', italic: '#00FF00', bold: '#FF00FF',
+                    whisper: '#00FF00', low: '#00FFFF', say: '#FFFFFF', long: '#FFA500', yell: '#FF0000',
+                    me: '#00FFFF', do: '#FF00FF', ooc: '#00FF00',
+                    mewhisper: '#00FF00', melow: '#00FFFF', menormal: '#00FFFF', melong: '#FFA500',
+                    pm: '#FF69B4', faction: '#00FF00', safehouse: '#FFFF00', general: '#87CEEB', admin: '#FF6347'
+                }
+            }
+        };
+
+        // Preview mode state
+        let workingConfigBackup = null;
+        let previewSource = null; // 'library', 'shared', or null
+        let selectedThemeId = null;
+
+        // Gather all current settings into an object
+        function gatherAllSettings() {
+            const settings = {
+                colors: {},
+                advanced: { ...advancedColors },
+                preview: {
+                    titlebar: document.getElementById('titlebarColor').value,
+                    background: document.getElementById('bgColor').value,
+                    opacity: document.getElementById('bgOpacity').value
+                },
+                includeAdvanced: document.getElementById('includeAdvanced').checked
+            };
+
+            for (const [key, setting] of Object.entries(colorSettings)) {
+                settings.colors[key] = document.getElementById(setting.id).value;
+            }
+
+            return settings;
+        }
+
+        // Apply settings object to the UI (without saving)
+        function applyColorsToUI(settings) {
+            // Apply basic colors
+            if (settings.colors) {
+                for (const [key, setting] of Object.entries(colorSettings)) {
+                    if (settings.colors[key]) {
+                        const color = settings.colors[key];
+                        if (/^#[0-9A-Fa-f]{6}$/i.test(color)) {
+                            document.getElementById(setting.id).value = color;
+                            document.getElementById(setting.id + 'Text').value = color.toUpperCase();
+                        }
+                    }
+                }
+            }
+
+            // Apply preview settings
+            if (settings.preview) {
+                if (settings.preview.titlebar && /^#[0-9A-Fa-f]{6}$/i.test(settings.preview.titlebar)) {
+                    document.getElementById('titlebarColor').value = settings.preview.titlebar;
+                    document.getElementById('titlebarColorText').value = settings.preview.titlebar.toUpperCase();
+                }
+                if (settings.preview.background && /^#[0-9A-Fa-f]{6}$/i.test(settings.preview.background)) {
+                    document.getElementById('bgColor').value = settings.preview.background;
+                    document.getElementById('bgColorText').value = settings.preview.background.toUpperCase();
+                }
+                if (settings.preview.opacity) {
+                    document.getElementById('bgOpacity').value = settings.preview.opacity;
+                    document.getElementById('opacityValue').textContent = settings.preview.opacity + '%';
+                }
+            }
+
+            // Apply advanced colors
+            if (settings.advanced) {
+                for (const [emote, color] of Object.entries(settings.advanced)) {
+                    if (/^#[0-9A-Fa-f]{6}$/i.test(color)) {
+                        advancedColors[emote] = color;
+                        const picker = document.getElementById(`adv_${emote}`);
+                        const text = document.getElementById(`adv_${emote}Text`);
+                        if (picker) picker.value = color;
+                        if (text) text.value = color.toUpperCase();
+                    }
+                }
+            }
+
+            // Apply checkbox state
+            if (settings.includeAdvanced !== undefined) {
+                document.getElementById('includeAdvanced').checked = settings.includeAdvanced;
+            }
+        }
+
+        // Convert theme colors to full settings format
+        function themeToSettings(themeColors) {
+            return {
+                colors: themeColors,
+                advanced: {},
+                preview: {
+                    titlebar: '#2D2D2D',
+                    background: '#000000',
+                    opacity: '75'
+                },
+                includeAdvanced: false
+            };
+        }
+
+        // Enter preview mode with given settings
+        function enterPreviewMode(settings, source, themeName = 'Shared Theme') {
+            // Backup current config if not already in preview mode
+            if (!workingConfigBackup) {
+                workingConfigBackup = gatherAllSettings();
+            }
+
+            previewSource = source;
+            applyColorsToUI(settings);
+            renderChatPreview();
+            updateCommandOutput();
+            showPreviewBanner(themeName);
+        }
+
+        // Show the preview banner
+        function showPreviewBanner(themeName, showBrowseMore = false) {
+            document.getElementById('previewThemeName').textContent = themeName;
+            document.getElementById('previewBanner').classList.add('visible');
+            document.body.classList.add('preview-mode');
+            document.getElementById('browseMoreBtn').style.display = showBrowseMore ? 'inline-block' : 'none';
+        }
+
+        // Hide the preview banner
+        function hidePreviewBanner() {
+            document.getElementById('previewBanner').classList.remove('visible');
+            document.body.classList.remove('preview-mode');
+        }
+
+        // Apply the previewed theme (commit it)
+        function applyPreview() {
+            workingConfigBackup = null;
+            previewSource = null;
+            selectedThemeId = null;
+            savePreferences();
+            hidePreviewBanner();
+            clearUrlHash();
+            closeThemeLibrary();
+            showToast('Theme applied!');
+        }
+
+        // Cancel preview and restore original colors
+        function cancelPreview() {
+            if (workingConfigBackup) {
+                applyColorsToUI(workingConfigBackup);
+                renderChatPreview();
+                updateCommandOutput();
+                workingConfigBackup = null;
+            }
+            previewSource = null;
+            selectedThemeId = null;
+            hidePreviewBanner();
+            clearUrlHash();
+            closeThemeLibrary();
+            showToast('Restored your colors');
+        }
+
+        // Clear URL hash
+        function clearUrlHash() {
+            if (window.location.hash) {
+                history.replaceState(null, '', window.location.pathname + window.location.search);
+            }
+        }
+
+        // ========================================
+        // Theme Library Modal
+        // ========================================
+
+        function openThemeLibrary() {
+            // Backup current config when opening
+            if (!workingConfigBackup) {
+                workingConfigBackup = gatherAllSettings();
+            }
+            selectedThemeId = null;
+            renderThemeGrid();
+            document.getElementById('themeModal').classList.add('show');
+            document.getElementById('applyThemeBtn').style.display = 'none';
+        }
+
+        function closeThemeLibrary() {
+            document.getElementById('themeModal').classList.remove('show');
+        }
+
+        // Close theme library - if no theme is being previewed, clear backup
+        function closeThemeLibraryAndRestore() {
+            closeThemeLibrary();
+            // If banner isn't showing, we never selected a theme, so clear backup
+            if (!document.getElementById('previewBanner').classList.contains('visible')) {
+                workingConfigBackup = null;
+            }
+        }
+
+        function renderThemeGrid() {
+            const grid = document.getElementById('themeGrid');
+            let html = '';
+
+            for (const [id, theme] of Object.entries(themeLibrary)) {
+                const swatches = [
+                    theme.colors.name,
+                    theme.colors.say,
+                    theme.colors.me,
+                    theme.colors.ooc,
+                    theme.colors.pm
+                ];
+
+                html += `
+                    <div class="theme-card" data-theme-id="${id}" onclick="previewTheme('${id}')">
+                        <div class="theme-card-name">${theme.name}</div>
+                        <div class="theme-card-swatches">
+                            ${swatches.map(color => `<div class="theme-swatch" style="background: ${color}"></div>`).join('')}
+                        </div>
+                        <div class="theme-card-description">${theme.description}</div>
+                    </div>
+                `;
+            }
+
+            grid.innerHTML = html;
+        }
+
+        function previewTheme(themeId) {
+            const theme = themeLibrary[themeId];
+            if (!theme) return;
+
+            // Update selection UI
+            document.querySelectorAll('.theme-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector(`[data-theme-id="${themeId}"]`).classList.add('selected');
+
+            selectedThemeId = themeId;
+
+            // Apply preview
+            const settings = themeToSettings(theme.colors);
+            applyColorsToUI(settings);
+            renderChatPreview();
+            updateCommandOutput();
+
+            // Close modal so user can see the preview
+            closeThemeLibrary();
+
+            // Show banner with Browse More option
+            showPreviewBanner(theme.name, true);
+            previewSource = 'library';
+        }
+
+        // Close theme modal on outside click
+        document.getElementById('themeModal').addEventListener('click', (e) => {
+            if (e.target.id === 'themeModal') {
+                closeThemeLibraryAndRestore();
+            }
+        });
+
+        // ========================================
+        // Share Link Generation
+        // ========================================
+
+        function generateShareLink() {
+            const settings = gatherAllSettings();
+
+            // Prompt for optional theme name
+            const themeName = prompt('Name your theme (optional):', 'My Custom Theme');
+            if (themeName === null) return; // User cancelled
+
+            settings.themeName = themeName || 'Shared Theme';
+
+            try {
+                const json = JSON.stringify(settings);
+                const encoded = btoa(json);
+                const url = `${window.location.origin}${window.location.pathname}#config=${encoded}`;
+
+                navigator.clipboard.writeText(url);
+                showToast('Share link copied to clipboard!');
+            } catch (e) {
+                showToast('Error generating share link');
+                console.error('Share link error:', e);
+            }
+        }
+
+        // Handle shared link on page load
+        function handleSharedLink() {
+            const hash = window.location.hash;
+            if (!hash.startsWith('#config=')) return;
+
+            try {
+                const encoded = hash.substring(8);
+                const json = atob(encoded);
+                const settings = JSON.parse(json);
+                const themeName = settings.themeName || 'Shared Theme';
+
+                // Enter preview mode with the shared settings
+                // Small delay to ensure page is fully loaded
+                setTimeout(() => {
+                    enterPreviewMode(settings, 'shared', themeName);
+                }, 100);
+            } catch (e) {
+                console.error('Invalid share link:', e);
+                clearUrlHash();
+            }
+        }
 
         // Render changelog
         function renderChangelog() {
@@ -1590,6 +2147,13 @@
             e.preventDefault();
             openChangelogModal();
         });
+
+        // Theme Library and Share buttons
+        document.getElementById('themesBtn').addEventListener('click', openThemeLibrary);
+        document.getElementById('shareBtn').addEventListener('click', generateShareLink);
+
+        // Handle shared links on page load
+        handleSharedLink();
 
         // Initialize Tippy.js tooltips
         tippy('[data-tippy-content]', {

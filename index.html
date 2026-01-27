@@ -1639,6 +1639,15 @@
         // Changelog data - add new entries at the top
         const changelog = [
             {
+                version: '1.2.2',
+                date: '2026-01-26',
+                changes: [
+                    'Share links are now much shorter (only encodes changed colors)',
+                    'Share copies as Discord-friendly markdown: [Theme Name](url)',
+                    'Backwards compatible with old share link format'
+                ]
+            },
+            {
                 version: '1.2.1',
                 date: '2026-01-26',
                 changes: [
@@ -2025,23 +2034,90 @@
         // Share Link Generation
         // ========================================
 
-        function generateShareLink() {
-            const settings = gatherAllSettings();
+        // Get only colors that differ from defaults (for shorter share links)
+        function getDeltaSettings() {
+            const current = gatherAllSettings();
+            const delta = { colors: {} };
 
+            // Only include colors that differ from defaults
+            for (const [key, setting] of Object.entries(colorSettings)) {
+                const currentColor = current.colors[key]?.toUpperCase();
+                const defaultColor = defaultColors[setting.id]?.toUpperCase();
+                if (currentColor && currentColor !== defaultColor) {
+                    delta.colors[key] = currentColor;
+                }
+            }
+
+            // Only include preview settings if different from defaults
+            if (current.preview.titlebar?.toUpperCase() !== defaultColors.titlebarColor?.toUpperCase()) {
+                delta.titlebar = current.preview.titlebar;
+            }
+            if (current.preview.background?.toUpperCase() !== defaultColors.bgColor?.toUpperCase()) {
+                delta.bg = current.preview.background;
+            }
+            if (current.preview.opacity !== defaultColors.bgOpacity) {
+                delta.opacity = current.preview.opacity;
+            }
+
+            // Only include advanced colors that are set and non-default
+            const nonDefaultAdvanced = {};
+            for (const [emote, color] of Object.entries(current.advanced || {})) {
+                if (color && color.toUpperCase() !== '#FEFEFE') {
+                    nonDefaultAdvanced[emote] = color;
+                }
+            }
+            if (Object.keys(nonDefaultAdvanced).length > 0) {
+                delta.adv = nonDefaultAdvanced;
+            }
+
+            return delta;
+        }
+
+        // Expand delta settings back to full settings
+        function expandDeltaSettings(delta) {
+            const full = {
+                colors: {},
+                advanced: {},
+                preview: {
+                    titlebar: delta.titlebar || defaultColors.titlebarColor,
+                    background: delta.bg || defaultColors.bgColor,
+                    opacity: delta.opacity || defaultColors.bgOpacity
+                },
+                includeAdvanced: false
+            };
+
+            // Start with defaults, override with delta
+            for (const [key, setting] of Object.entries(colorSettings)) {
+                full.colors[key] = delta.colors?.[key] || defaultColors[setting.id];
+            }
+
+            // Expand advanced colors
+            if (delta.adv) {
+                full.advanced = delta.adv;
+            }
+
+            return full;
+        }
+
+        function generateShareLink() {
             // Prompt for optional theme name
             const themeName = prompt('Name your theme (optional):', 'My Custom Theme');
             if (themeName === null) return; // User cancelled
 
-            settings.themeName = themeName || 'Shared Theme';
+            const name = themeName || 'Shared Theme';
+            const delta = getDeltaSettings();
+            delta.n = name; // Short key for name
 
             try {
-                const json = JSON.stringify(settings);
-                // Unicode-safe encoding: encodeURIComponent handles special chars, btoa handles the rest
+                const json = JSON.stringify(delta);
+                // Unicode-safe encoding
                 const encoded = btoa(encodeURIComponent(json));
                 const url = `${window.location.origin}${window.location.pathname}#config=${encoded}`;
 
-                navigator.clipboard.writeText(url);
-                showToast('Share link copied to clipboard!');
+                // Copy as Discord-friendly markdown: [Theme Name](url)
+                const discordMarkdown = `[${name}](${url})`;
+                navigator.clipboard.writeText(discordMarkdown);
+                showToast('Copied as Discord link!');
             } catch (e) {
                 showToast('Error generating share link');
                 console.error('Share link error:', e);
@@ -2055,10 +2131,14 @@
 
             try {
                 const encoded = hash.substring(8);
-                // Unicode-safe decoding: reverse of encoding process
+                // Unicode-safe decoding
                 const json = decodeURIComponent(atob(encoded));
-                const settings = JSON.parse(json);
-                const themeName = settings.themeName || 'Shared Theme';
+                const delta = JSON.parse(json);
+                const themeName = delta.n || delta.themeName || 'Shared Theme';
+
+                // Expand delta to full settings
+                const settings = expandDeltaSettings(delta);
+                settings.themeName = themeName;
 
                 // Enter preview mode with the shared settings
                 // Small delay to ensure page is fully loaded

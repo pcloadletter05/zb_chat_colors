@@ -1090,6 +1090,15 @@
             bgOpacity: '75'
         };
 
+        // ========================================
+        // Utility Functions
+        // ========================================
+
+        // Validate hex color format
+        function isValidHex(color) {
+            return /^#[0-9A-Fa-f]{6}$/i.test(color);
+        }
+
         // Helper to convert hex to RGB string
         function hexToRgb(hex) {
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -1097,6 +1106,33 @@
                 return `${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)}`;
             }
             return '255,255,255';
+        }
+
+        // Safe localStorage wrapper (handles private browsing, quota exceeded, etc.)
+        function safeStorage(operation, key, value) {
+            try {
+                if (operation === 'get') {
+                    return localStorage.getItem(key);
+                } else if (operation === 'set') {
+                    localStorage.setItem(key, value);
+                    return true;
+                } else if (operation === 'remove') {
+                    localStorage.removeItem(key);
+                    return true;
+                }
+            } catch (e) {
+                console.warn('localStorage unavailable:', e);
+                return null;
+            }
+        }
+
+        // Debounce function for performance
+        function debounce(fn, delay = 16) {
+            let timeout;
+            return (...args) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => fn(...args), delay);
+            };
         }
 
         // Show toast notification
@@ -1307,6 +1343,12 @@
             `;
         }
 
+        // Debounced preview update for smoother color picker dragging
+        const debouncedPreviewUpdate = debounce(() => {
+            renderChatPreview();
+            updateCommandOutput();
+        }, 16);
+
         // Sync color picker with text input
         function syncColorInputs(colorId) {
             const colorPicker = document.getElementById(colorId);
@@ -1316,17 +1358,15 @@
 
             colorPicker.addEventListener('input', () => {
                 textInput.value = colorPicker.value.toUpperCase();
-                renderChatPreview();
-                updateCommandOutput();
+                debouncedPreviewUpdate();
             });
 
             textInput.addEventListener('input', () => {
                 let value = textInput.value;
                 if (!value.startsWith('#')) value = '#' + value;
-                if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+                if (isValidHex(value)) {
                     colorPicker.value = value;
-                    renderChatPreview();
-                    updateCommandOutput();
+                    debouncedPreviewUpdate();
                 }
             });
 
@@ -1348,10 +1388,20 @@
             colorIds.forEach(syncColorInputs);
         }
 
-        // Toggle advanced section
+        // Track if advanced section has been generated
+        let advancedGenerated = false;
+
+        // Toggle advanced section (lazy loads inputs on first open)
         function toggleAdvanced() {
             const content = document.getElementById('advancedContent');
             const toggle = document.getElementById('advancedToggle');
+
+            // Lazy load: generate inputs only when first opened
+            if (!advancedGenerated) {
+                generateAdvancedInputs();
+                advancedGenerated = true;
+            }
+
             content.classList.toggle('open');
             toggle.classList.toggle('open');
         }
@@ -1365,12 +1415,14 @@
                 html += `<div class="advanced-group"><h4>${group}</h4>`;
                 for (const emote of emotes) {
                     const displayName = emote.replace(group.toLowerCase(), '');
-                    advancedColors[emote] = '#FEFEFE';
+                    // Use existing value if loaded from preferences, otherwise default
+                    const color = advancedColors[emote] || '#FEFEFE';
+                    advancedColors[emote] = color;
                     html += `
                         <div class="advanced-row">
                             <label>${displayName || 'base'}</label>
-                            <input type="color" id="adv_${emote}" value="#FEFEFE" onchange="updateAdvancedColor('${emote}', this.value)">
-                            <input type="text" id="adv_${emote}Text" value="#FEFEFE" onchange="updateAdvancedColorFromText('${emote}', this.value)">
+                            <input type="color" id="adv_${emote}" value="${color}" onchange="updateAdvancedColor('${emote}', this.value)">
+                            <input type="text" id="adv_${emote}Text" value="${color.toUpperCase()}" onchange="updateAdvancedColorFromText('${emote}', this.value)">
                             <button class="copy-btn" onclick="copyAdvancedCommand('${emote}')">Copy</button>
                         </div>
                     `;
@@ -1392,7 +1444,7 @@
         // Update advanced color from text input
         function updateAdvancedColorFromText(emoteType, value) {
             if (!value.startsWith('#')) value = '#' + value;
-            if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+            if (isValidHex(value)) {
                 advancedColors[emoteType] = value;
                 document.getElementById(`adv_${emoteType}`).value = value;
                 updateCommandOutput();
@@ -1411,7 +1463,7 @@
         // Reset to default values
         function resetToDefaults() {
             // Clear localStorage
-            localStorage.removeItem('zb_chat_colors_prefs');
+            safeStorage('remove', 'zb_chat_colors_prefs');
 
             // Reset basic colors
             for (const [id, value] of Object.entries(defaultColors)) {
@@ -1502,7 +1554,7 @@
                 for (const [key, setting] of Object.entries(colorSettings)) {
                     if (data.colors[key]) {
                         const color = data.colors[key];
-                        if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
+                        if (isValidHex(color)) {
                             document.getElementById(setting.id).value = color;
                             document.getElementById(setting.id + 'Text').value = color.toUpperCase();
                         }
@@ -1511,11 +1563,11 @@
 
                 // Load preview settings
                 if (data.preview) {
-                    if (data.preview.titlebar && /^#[0-9A-Fa-f]{6}$/.test(data.preview.titlebar)) {
+                    if (data.preview.titlebar && isValidHex(data.preview.titlebar)) {
                         document.getElementById('titlebarColor').value = data.preview.titlebar;
                         document.getElementById('titlebarColorText').value = data.preview.titlebar.toUpperCase();
                     }
-                    if (data.preview.background && /^#[0-9A-Fa-f]{6}$/.test(data.preview.background)) {
+                    if (data.preview.background && isValidHex(data.preview.background)) {
                         document.getElementById('bgColor').value = data.preview.background;
                         document.getElementById('bgColorText').value = data.preview.background.toUpperCase();
                     }
@@ -1528,7 +1580,7 @@
                 // Load advanced colors
                 if (data.advanced) {
                     for (const [emote, color] of Object.entries(data.advanced)) {
-                        if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
+                        if (isValidHex(color)) {
                             advancedColors[emote] = color;
                             const picker = document.getElementById(`adv_${emote}`);
                             const text = document.getElementById(`adv_${emote}Text`);
@@ -1586,6 +1638,18 @@
 
         // Changelog data - add new entries at the top
         const changelog = [
+            {
+                version: '1.2.1',
+                date: '2026-01-26',
+                changes: [
+                    'Performance: debounced color picker updates for smoother dragging',
+                    'Performance: lazy load advanced section on first open',
+                    'Reliability: Unicode-safe share link encoding',
+                    'Reliability: graceful handling of localStorage errors',
+                    'Reliability: CDN fallback check for tooltips',
+                    'Code quality: consolidated color validation'
+                ]
+            },
             {
                 version: '1.2.0',
                 date: '2026-01-26',
@@ -1749,7 +1813,7 @@
                 for (const [key, setting] of Object.entries(colorSettings)) {
                     if (settings.colors[key]) {
                         const color = settings.colors[key];
-                        if (/^#[0-9A-Fa-f]{6}$/i.test(color)) {
+                        if (isValidHex(color)) {
                             document.getElementById(setting.id).value = color;
                             document.getElementById(setting.id + 'Text').value = color.toUpperCase();
                         }
@@ -1759,11 +1823,11 @@
 
             // Apply preview settings
             if (settings.preview) {
-                if (settings.preview.titlebar && /^#[0-9A-Fa-f]{6}$/i.test(settings.preview.titlebar)) {
+                if (settings.preview.titlebar && isValidHex(settings.preview.titlebar)) {
                     document.getElementById('titlebarColor').value = settings.preview.titlebar;
                     document.getElementById('titlebarColorText').value = settings.preview.titlebar.toUpperCase();
                 }
-                if (settings.preview.background && /^#[0-9A-Fa-f]{6}$/i.test(settings.preview.background)) {
+                if (settings.preview.background && isValidHex(settings.preview.background)) {
                     document.getElementById('bgColor').value = settings.preview.background;
                     document.getElementById('bgColorText').value = settings.preview.background.toUpperCase();
                 }
@@ -1776,7 +1840,7 @@
             // Apply advanced colors
             if (settings.advanced) {
                 for (const [emote, color] of Object.entries(settings.advanced)) {
-                    if (/^#[0-9A-Fa-f]{6}$/i.test(color)) {
+                    if (isValidHex(color)) {
                         advancedColors[emote] = color;
                         const picker = document.getElementById(`adv_${emote}`);
                         const text = document.getElementById(`adv_${emote}Text`);
@@ -1972,7 +2036,8 @@
 
             try {
                 const json = JSON.stringify(settings);
-                const encoded = btoa(json);
+                // Unicode-safe encoding: encodeURIComponent handles special chars, btoa handles the rest
+                const encoded = btoa(encodeURIComponent(json));
                 const url = `${window.location.origin}${window.location.pathname}#config=${encoded}`;
 
                 navigator.clipboard.writeText(url);
@@ -1990,7 +2055,8 @@
 
             try {
                 const encoded = hash.substring(8);
-                const json = atob(encoded);
+                // Unicode-safe decoding: reverse of encoding process
+                const json = decodeURIComponent(atob(encoded));
                 const settings = JSON.parse(json);
                 const themeName = settings.themeName || 'Shared Theme';
 
@@ -2052,12 +2118,12 @@
                 prefs.colors[key] = document.getElementById(setting.id).value;
             }
 
-            localStorage.setItem('zb_chat_colors_prefs', JSON.stringify(prefs));
+            safeStorage('set', 'zb_chat_colors_prefs', JSON.stringify(prefs));
         }
 
         // Load preferences from localStorage
         function loadPreferences() {
-            const saved = localStorage.getItem('zb_chat_colors_prefs');
+            const saved = safeStorage('get', 'zb_chat_colors_prefs');
             if (!saved) return;
 
             try {
@@ -2125,9 +2191,21 @@
             });
         }
 
+        // Apply default colors from JS (single source of truth)
+        function applyDefaults() {
+            for (const [id, value] of Object.entries(defaultColors)) {
+                const picker = document.getElementById(id);
+                const text = document.getElementById(id + 'Text');
+                if (picker) picker.value = value;
+                if (text) text.value = value.toUpperCase();
+            }
+            document.getElementById('opacityValue').textContent = defaultColors.bgOpacity + '%';
+        }
+
         // Initialize
+        applyDefaults();
         initColorInputs();
-        generateAdvancedInputs();
+        // Note: generateAdvancedInputs() is now lazy loaded in toggleAdvanced()
         loadPreferences();
         initColorInputsWithSave();
         renderChatPreview();
@@ -2155,14 +2233,16 @@
         // Handle shared links on page load
         handleSharedLink();
 
-        // Initialize Tippy.js tooltips
-        tippy('[data-tippy-content]', {
-            theme: 'custom',
-            placement: 'top',
-            arrow: true,
-            delay: [200, 0],
-            duration: [200, 150]
-        });
+        // Initialize Tippy.js tooltips (with CDN fallback check)
+        if (typeof tippy === 'function') {
+            tippy('[data-tippy-content]', {
+                theme: 'custom',
+                placement: 'top',
+                arrow: true,
+                delay: [200, 0],
+                duration: [200, 150]
+            });
+        }
     </script>
 </body>
 </html>

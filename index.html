@@ -542,6 +542,43 @@
             border-top: 1px solid #333;
         }
 
+        /* Changelog Styles */
+        .changelog-entry {
+            margin-bottom: 20px;
+        }
+        .changelog-entry:last-child {
+            margin-bottom: 0;
+        }
+        .changelog-version {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .changelog-version h3 {
+            margin: 0;
+            font-size: 1em;
+            color: #fff;
+        }
+        .changelog-date {
+            font-size: 0.8em;
+            color: #666;
+        }
+        .changelog-entry ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #aaa;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        .changelog-entry li {
+            margin-bottom: 4px;
+        }
+        #changelogLink:hover {
+            color: #aaa;
+            text-decoration: underline;
+        }
+
         /* Tippy.js custom theme */
         .tippy-box[data-theme~='custom'] {
             background-color: #1a2744;
@@ -562,10 +599,12 @@
 <body>
     <h1>TICS Chat Color Picker</h1>
     <p class="subtitle">Total Immersive Chat System - Project Zomboid</p>
-    <div style="text-align: center; margin-bottom: 20px; display: flex; gap: 10px; justify-content: center;">
+    <div style="text-align: center; margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; align-items: center;">
         <button id="exportBtn" class="action-btn export-btn" data-tippy-content="Copy all settings as JSON to clipboard">Export</button>
         <button id="importBtn" class="action-btn import-btn" data-tippy-content="Load settings from exported JSON">Import</button>
         <button id="resetBtn" class="reset-btn" data-tippy-content="Reset all colors to default values">Reset to Defaults</button>
+        <span style="color: #666; margin-left: 10px;">|</span>
+        <a href="#" id="changelogLink" style="color: #888; font-size: 0.85em; text-decoration: none;" data-tippy-content="View recent updates">Changelog</a>
     </div>
 
     <!-- Import Modal -->
@@ -583,6 +622,19 @@
             <div class="modal-footer">
                 <button class="action-btn" onclick="closeImportModal()">Cancel</button>
                 <button class="action-btn export-btn" onclick="loadImportedSettings()">Load Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Changelog Modal -->
+    <div id="changelogModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>Changelog</h2>
+                <button class="modal-close" onclick="closeChangelogModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="changelogBody" style="max-height: 400px; overflow-y: auto;">
+                <!-- Changelog entries rendered by JavaScript -->
             </div>
         </div>
     </div>
@@ -1351,12 +1403,81 @@
             }
         });
 
-        // Close modal on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && document.getElementById('importModal').classList.contains('show')) {
-                closeImportModal();
+        document.getElementById('changelogModal').addEventListener('click', (e) => {
+            if (e.target.id === 'changelogModal') {
+                closeChangelogModal();
             }
         });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (document.getElementById('importModal').classList.contains('show')) {
+                    closeImportModal();
+                }
+                if (document.getElementById('changelogModal').classList.contains('show')) {
+                    closeChangelogModal();
+                }
+            }
+        });
+
+        // Changelog data - add new entries at the top
+        const changelog = [
+            {
+                version: '1.1.0',
+                date: '2026-01-26',
+                changes: [
+                    'Fixed /me command in Voice Me section (was incorrectly using "menormal")',
+                    'Removed invalid "normal" variants from advanced emote colors',
+                    'Advanced section now only shows low/long variants (base commands in main settings)',
+                    'Added this changelog modal'
+                ]
+            },
+            {
+                version: '1.0.0',
+                date: '2026-01-25',
+                changes: [
+                    'Initial release',
+                    'Color picker for all TICS chat channels',
+                    'Live chat preview with customizable background',
+                    'Export/Import settings as JSON',
+                    'Advanced emote color variants',
+                    'Tooltips for all options',
+                    'Settings saved to localStorage'
+                ]
+            }
+        ];
+
+        // Render changelog
+        function renderChangelog() {
+            const container = document.getElementById('changelogBody');
+            let html = '';
+            for (const entry of changelog) {
+                html += `
+                    <div class="changelog-entry">
+                        <div class="changelog-version">
+                            <h3>v${entry.version}</h3>
+                            <span class="changelog-date">${entry.date}</span>
+                        </div>
+                        <ul>
+                            ${entry.changes.map(change => `<li>${change}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        // Open changelog modal
+        function openChangelogModal() {
+            renderChangelog();
+            document.getElementById('changelogModal').classList.add('show');
+        }
+
+        // Close changelog modal
+        function closeChangelogModal() {
+            document.getElementById('changelogModal').classList.remove('show');
+        }
 
         // Save preferences to localStorage
         function savePreferences() {
@@ -1462,9 +1583,13 @@
         // Reset button
         document.getElementById('resetBtn').addEventListener('click', resetToDefaults);
 
-        // Export and Import buttons
+        // Export, Import, and Changelog buttons
         document.getElementById('exportBtn').addEventListener('click', exportSettings);
         document.getElementById('importBtn').addEventListener('click', openImportModal);
+        document.getElementById('changelogLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            openChangelogModal();
+        });
 
         // Initialize Tippy.js tooltips
         tippy('[data-tippy-content]', {

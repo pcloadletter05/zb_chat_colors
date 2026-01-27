@@ -678,7 +678,7 @@
                     <label data-tippy-content="Standard emote at normal speaking range.">/me</label>
                     <input type="color" id="menormalColor" value="#DFFDFF">
                     <input type="text" id="menormalColorText" value="#DFFDFF">
-                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'menormal')">Copy</button>
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'me', 'menormalColor')">Copy</button>
                 </div>
                 <div class="color-row">
                     <label data-tippy-content="Emote at long range. Visible actions like waving or signaling.">/melong</label>
@@ -828,7 +828,7 @@
             ooc: { id: 'oocColor', command: 'emotecolor ooc' },
             mewhisper: { id: 'mewhisperColor', command: 'emotecolor mewhisper' },
             melow: { id: 'melowColor', command: 'emotecolor melow' },
-            menormal: { id: 'menormalColor', command: 'emotecolor menormal' },
+            menormal: { id: 'menormalColor', command: 'emotecolor me' },
             melong: { id: 'melongColor', command: 'emotecolor melong' },
             pm: { id: 'pmColor', command: 'emotecolor pm' },
             faction: { id: 'factionColor', command: 'emotecolor faction' },
@@ -837,14 +837,14 @@
             admin: { id: 'adminColor', command: 'emotecolor admin' }
         };
 
-        // Advanced emote color variants
+        // Advanced emote color variants (low/long only - base commands are in main settings)
         const advancedEmotes = {
-            'Do': ['dolow', 'donormal', 'dolong'],
-            'OOC': ['ooclow', 'oocnormal', 'ooclong'],
-            'PM': ['pmlow', 'pmnormal', 'pmlong'],
-            'Faction': ['factionlow', 'factionnormal', 'factionlong'],
-            'Safehouse': ['safehouselow', 'safehousenormal', 'safehouselong'],
-            'Admin': ['adminlow', 'adminnormal', 'adminlong', 'admindolow', 'admindonormal', 'admindolong']
+            'Do': ['dolow', 'dolong'],
+            'OOC': ['ooclow', 'ooclong'],
+            'PM': ['pmlow', 'pmlong'],
+            'Faction': ['factionlow', 'factionlong'],
+            'Safehouse': ['safehouselow', 'safehouselong'],
+            'Admin': ['adminlow', 'adminlong', 'admindolow', 'admindolong']
         };
 
         // Store advanced color values
@@ -908,8 +908,9 @@
         }
 
         // Copy a single command
-        function copyCommand(type, subtype = null) {
+        function copyCommand(type, subtype = null, colorId = null) {
             const colorInput = document.getElementById(
+                colorId ? colorId :
                 subtype ? `${subtype}Color` :
                 type === 'color' ? 'nameColor' :
                 type === 'dc' ? 'dialogueColor' :

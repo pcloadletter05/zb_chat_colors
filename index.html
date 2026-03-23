@@ -719,6 +719,156 @@
         .share-btn:hover {
             background: #805ad5;
         }
+
+        /* Test Mode Styles */
+        .test-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #4a5568;
+            border-radius: 24px;
+            transition: 0.3s;
+        }
+        .toggle-slider:before {
+            content: "";
+            position: absolute;
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+        .toggle-switch input:checked + .toggle-slider {
+            background: #6b46c1;
+        }
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+        .toggle-label {
+            font-size: 0.85em;
+            color: #aaa;
+            user-select: none;
+            cursor: pointer;
+        }
+        .toggle-label .mode-name {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .test-mode-container {
+            display: none;
+            position: relative;
+        }
+        .test-mode-container.active {
+            display: block;
+        }
+        .chat-preview.hidden-mode {
+            display: none;
+        }
+
+        /* Textarea + overlay approach — textarea drives layout, overlay sits behind */
+        .test-mode-wrap {
+            position: relative;
+            overflow: hidden;
+        }
+        .test-mode-textarea,
+        .test-mode-overlay {
+            /* Identical box model so they render text in the same positions */
+            padding: 15px;
+            margin: 0;
+            border: none;
+            font-family: 'Corbel', sans-serif;
+            font-weight: bold;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            letter-spacing: normal;
+            tab-size: 4;
+        }
+        .test-mode-textarea {
+            /* Textarea is the visible, interactive layer — drives scroll & height */
+            display: block;
+            position: relative;
+            width: 100%;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+            color: transparent;
+            caret-color: #fff;
+            background: transparent;
+            outline: none;
+            resize: none;
+            z-index: 2;
+            -webkit-text-fill-color: transparent;
+        }
+        .test-mode-textarea::placeholder {
+            -webkit-text-fill-color: #555;
+            color: #555;
+            font-style: italic;
+        }
+        .test-mode-overlay {
+            /* Overlay sits behind textarea, absolutely positioned to match exactly */
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .test-mode-wrap:focus-within {
+            box-shadow: inset 0 0 0 1px rgba(107, 70, 193, 0.4);
+        }
+
+        .test-mode-actions {
+            display: flex;
+            gap: 8px;
+            padding: 8px 0;
+        }
+        .test-mode-actions .action-btn {
+            font-size: 0.8em;
+            padding: 6px 14px;
+        }
+        .test-copy-btn {
+            background: #6b46c1 !important;
+        }
+        .test-copy-btn:hover {
+            background: #805ad5 !important;
+        }
+        .test-clear-btn {
+            background: #744210 !important;
+        }
+        .test-clear-btn:hover {
+            background: #975a16 !important;
+        }
+        .test-mode-hint {
+            font-size: 0.75em;
+            color: #555;
+            margin-left: auto;
+            align-self: center;
+        }
     </style>
 </head>
 <body>
@@ -975,6 +1125,17 @@
                 </div>
             </div>
 
+            <!-- Test Mode Toggle -->
+            <div class="test-mode-toggle">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="testModeToggle">
+                    <span class="toggle-slider"></span>
+                </label>
+                <label class="toggle-label" for="testModeToggle">
+                    <span id="testModeLabel"><span class="mode-name">Examples</span> — sample chat messages</span>
+                </label>
+            </div>
+
             <div class="chat-window" id="chatWindow">
                 <div class="chat-titlebar" id="chatTitlebar">
                     <span>Chat</span>
@@ -986,6 +1147,20 @@
                 <div class="chat-preview" id="chatPreview">
                     <!-- Chat messages will be rendered here -->
                 </div>
+                <div class="test-mode-container" id="testModeContainer">
+                    <div class="test-mode-wrap">
+                        <div class="test-mode-overlay" id="testModeOverlay"></div>
+                        <textarea class="test-mode-textarea" id="testModeTextarea"
+                                  spellcheck="true"
+                                  placeholder='Type here... e.g. /melow brushes her hair back with a low hum, "you really think so?"'></textarea>
+                    </div>
+                </div>
+            </div>
+            <!-- Test Mode Actions (shown only in test mode) -->
+            <div class="test-mode-actions" id="testModeActions" style="display: none;">
+                <button class="action-btn test-copy-btn" onclick="copyTestText()">Copy Text</button>
+                <button class="action-btn test-clear-btn" onclick="clearTestEditor()">Clear</button>
+                <span class="test-mode-hint">Spellcheck on &bull; Commands: /me /melow /melong /mewhisper /do /whisper /say /low /long /yell /ooc /pm /faction /safehouse /general /admin</span>
             </div>
             <div class="bg-hex-display">
                 <span>Background:</span>
@@ -1638,6 +1813,19 @@
 
         // Changelog data - add new entries at the top
         const changelog = [
+            {
+                version: '1.3.0',
+                date: '2026-03-22',
+                changes: [
+                    'Added Test Mode: toggle from examples to a live RP notepad',
+                    'Type with /commands and see colors applied in real-time',
+                    'Supports all TICS commands: /me, /melow, /melong, /mewhisper, /do, /whisper, /say, /low, /long, /yell, /ooc, /pm, /faction, /safehouse, /general, /admin',
+                    'Inline formatting: **bold**, *italic*, and "dialogue" colored live',
+                    'Quick-copy button copies raw text for pasting into PZ chat',
+                    'Content and toggle state persist across page reloads',
+                    'Browser spellcheck enabled in test mode'
+                ]
+            },
             {
                 version: '1.2.2',
                 date: '2026-01-26',
@@ -2323,6 +2511,216 @@
                 duration: [200, 150]
             });
         }
+
+        // ========================================
+        // Test Mode — Live RP Notepad (textarea + overlay)
+        // ========================================
+
+        const testModeToggle = document.getElementById('testModeToggle');
+        const testModeLabel = document.getElementById('testModeLabel');
+        const testModeContainer = document.getElementById('testModeContainer');
+        const testModeActions = document.getElementById('testModeActions');
+        const testTextarea = document.getElementById('testModeTextarea');
+        const testOverlay = document.getElementById('testModeOverlay');
+        const chatPreviewEl = document.getElementById('chatPreview');
+
+        let testModeActive = false;
+
+        // Command-to-color mapping (order matters: longer prefixes first)
+        function getCommandColorMap() {
+            return [
+                { cmd: '/mewhisper ' , color: () => document.getElementById('mewhisperColor').value },
+                { cmd: '/melow '     , color: () => document.getElementById('melowColor').value },
+                { cmd: '/melong '    , color: () => document.getElementById('melongColor').value },
+                { cmd: '/me '        , color: () => document.getElementById('menormalColor').value },
+                { cmd: '/do '        , color: () => document.getElementById('doColor').value },
+                { cmd: '/whisper '   , color: () => document.getElementById('whisperColor').value },
+                { cmd: '/low '       , color: () => document.getElementById('lowColor').value },
+                { cmd: '/say '       , color: () => document.getElementById('sayColor').value },
+                { cmd: '/long '      , color: () => document.getElementById('longColor').value },
+                { cmd: '/yell '      , color: () => document.getElementById('yellColor').value },
+                { cmd: '/ooc '       , color: () => document.getElementById('oocColor').value },
+                { cmd: '/pm '        , color: () => document.getElementById('pmColor').value },
+                { cmd: '/faction '   , color: () => document.getElementById('factionColor').value },
+                { cmd: '/safehouse ' , color: () => document.getElementById('safehouseColor').value },
+                { cmd: '/general '   , color: () => document.getElementById('generalColor').value },
+                { cmd: '/admin '     , color: () => document.getElementById('adminColor').value },
+            ];
+        }
+
+        // Escape HTML entities
+        function escHTML(str) {
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // Parse inline formatting: **bold**, *italic*, "dialogue"
+        function parseInlineFormatting(text, baseColor) {
+            const boldColor = document.getElementById('boldColor').value;
+            const italicColor = document.getElementById('italicColor').value;
+            const dialogueColor = document.getElementById('dialogueColor').value;
+
+            let result = '';
+            let i = 0;
+            const len = text.length;
+
+            while (i < len) {
+                // **bold**
+                if (text[i] === '*' && i + 1 < len && text[i + 1] === '*') {
+                    const end = text.indexOf('**', i + 2);
+                    if (end !== -1) {
+                        const inner = escHTML(text.substring(i + 2, end));
+                        result += `<span style="color:${boldColor};font-weight:bold">**${inner}**</span>`;
+                        i = end + 2;
+                        continue;
+                    }
+                }
+                // *italic*
+                if (text[i] === '*' && (i === 0 || text[i - 1] !== '*') && i + 1 < len && text[i + 1] !== '*') {
+                    const end = text.indexOf('*', i + 1);
+                    if (end !== -1 && text[end + 1] !== '*') {
+                        const inner = escHTML(text.substring(i + 1, end));
+                        result += `<span style="color:${italicColor};font-style:italic">*${inner}*</span>`;
+                        i = end + 1;
+                        continue;
+                    }
+                }
+                // "dialogue"
+                if (text[i] === '"') {
+                    const end = text.indexOf('"', i + 1);
+                    if (end !== -1) {
+                        const inner = escHTML(text.substring(i + 1, end));
+                        result += `<span style="color:${dialogueColor}">&quot;${inner}&quot;</span>`;
+                        i = end + 1;
+                        continue;
+                    }
+                }
+                // Regular character
+                result += escHTML(text[i]);
+                i++;
+            }
+            return result;
+        }
+
+        // Colorize a single line of text — keeps raw text as-is, just applies color
+        function colorizeLine(rawLine) {
+            const commandMap = getCommandColorMap();
+            const lineLower = rawLine.toLowerCase();
+
+            for (const entry of commandMap) {
+                if (lineLower.startsWith(entry.cmd)) {
+                    const baseColor = entry.color();
+                    const cmdText = rawLine.substring(0, entry.cmd.length);
+                    const messageText = rawLine.substring(entry.cmd.length);
+                    const formatted = parseInlineFormatting(messageText, baseColor);
+                    return `<span style="color:${baseColor}"><span style="opacity:0.6">${escHTML(cmdText)}</span>${formatted}</span>`;
+                }
+            }
+
+            // No command detected — treat as plain /say style
+            const sayColor = document.getElementById('sayColor').value;
+            const formatted = parseInlineFormatting(rawLine, sayColor);
+            return `<span style="color:${sayColor}">${formatted}</span>`;
+        }
+
+        // Update the colored overlay from textarea content
+        function updateOverlay() {
+            const rawText = testTextarea.value;
+            const lines = rawText.split('\n');
+            const html = lines.map(line => {
+                if (line === '') return '\n'; // preserve empty lines
+                return colorizeLine(line);
+            }).join('\n');
+
+            // Append a trailing newline so the overlay height matches textarea
+            testOverlay.innerHTML = html + '\n';
+
+            // Save to localStorage
+            safeStorage('set', 'zb_test_mode_content', rawText);
+        }
+
+        // Sync scroll between textarea and overlay
+        function syncScroll() {
+            testOverlay.scrollTop = testTextarea.scrollTop;
+            testOverlay.scrollLeft = testTextarea.scrollLeft;
+        }
+
+        // Listen for input on the textarea
+        testTextarea.addEventListener('input', updateOverlay);
+        testTextarea.addEventListener('scroll', syncScroll);
+
+        // Toggle between Examples and Test Mode
+        function setTestMode(active) {
+            testModeActive = active;
+            testModeToggle.checked = active;
+
+            if (active) {
+                chatPreviewEl.classList.add('hidden-mode');
+                testModeContainer.classList.add('active');
+                testModeActions.style.display = 'flex';
+                testModeLabel.innerHTML = '<span class="mode-name">Test Mode</span> — type to preview your RP text with colors';
+                applyTestEditorBackground();
+                updateOverlay();
+                testTextarea.focus();
+            } else {
+                chatPreviewEl.classList.remove('hidden-mode');
+                testModeContainer.classList.remove('active');
+                testModeActions.style.display = 'none';
+                testModeLabel.innerHTML = '<span class="mode-name">Examples</span> — sample chat messages';
+            }
+
+            safeStorage('set', 'zb_test_mode_active', active ? '1' : '0');
+        }
+
+        testModeToggle.addEventListener('change', () => {
+            setTestMode(testModeToggle.checked);
+        });
+
+        // Apply the chat background to the test overlay
+        function applyTestEditorBackground() {
+            const bgColor = document.getElementById('bgColor').value;
+            const bgOpacity = document.getElementById('bgOpacity').value / 100;
+            const r = parseInt(bgColor.slice(1, 3), 16);
+            const g = parseInt(bgColor.slice(3, 5), 16);
+            const b = parseInt(bgColor.slice(5, 7), 16);
+            const bg = `rgba(${r}, ${g}, ${b}, ${bgOpacity})`;
+            testOverlay.style.background = bg;
+        }
+
+        // Copy raw text from textarea
+        function copyTestText() {
+            navigator.clipboard.writeText(testTextarea.value);
+            showToast('Copied RP text!');
+        }
+
+        // Clear the textarea
+        function clearTestEditor() {
+            testTextarea.value = '';
+            updateOverlay();
+            testTextarea.focus();
+            showToast('Cleared!');
+        }
+
+        // Hook into renderChatPreview to also update test editor
+        const _originalRenderChatPreview = renderChatPreview;
+        renderChatPreview = function() {
+            _originalRenderChatPreview();
+            if (testModeActive) {
+                applyTestEditorBackground();
+                updateOverlay();
+            }
+        };
+
+        // Load test mode state on startup
+        (function initTestMode() {
+            const savedContent = safeStorage('get', 'zb_test_mode_content');
+            if (savedContent) {
+                testTextarea.value = savedContent;
+            }
+            const savedActive = safeStorage('get', 'zb_test_mode_active');
+            if (savedActive === '1') {
+                setTestMode(true);
+            }
+        })();
     </script>
 </body>
 </html>

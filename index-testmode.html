@@ -16,358 +16,122 @@
             box-sizing: border-box;
         }
         body {
-            margin: 0;
-            overflow: hidden;
-            height: 100vh;
             font-family: 'Inter', sans-serif;
-            background: #0F172A;
-            color: #F8FAFC;
+            background: #1a1a2e;
+            color: #eee;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+        }
+        .container {
             display: flex;
-            flex-direction: column;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            flex-wrap: wrap;
         }
-
-        /* ===== Toolbar ===== */
-        .toolbar {
-            height: 52px;
-            background: #0F172A;
-            border-bottom: 1px solid #1E293B;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            z-index: 100;
-        }
-        .toolbar-title {
-            font-size: 1.05em;
-            font-weight: 700;
-            color: #F8FAFC;
-            white-space: nowrap;
-        }
-        .toolbar-actions {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-        .toolbar-sep {
-            color: #475569;
-            user-select: none;
-            font-size: 0.85em;
-        }
-
-        /* ===== Two-Panel Layout ===== */
-        .toolbar { flex-shrink: 0; }
-        .preview-banner { flex-shrink: 0; }
-        .app-layout {
-            display: flex;
+        .settings-panel {
             flex: 1;
-            min-height: 0;
+            min-width: 350px;
+            background: #16213e;
+            border-radius: 10px;
+            padding: 20px;
         }
-        .panel-left {
-            width: 420px;
-            flex-shrink: 0;
-            overflow-y: auto;
-            padding: 16px;
-        }
-        .panel-right {
+        .preview-panel {
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 16px;
-            overflow: hidden;
+            min-width: 400px;
         }
-
-        /* ===== Custom Scrollbar ===== */
-        .panel-left::-webkit-scrollbar { width: 6px; }
-        .panel-left::-webkit-scrollbar-track { background: transparent; }
-        .panel-left::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
-        .panel-left::-webkit-scrollbar-thumb:hover { background: #64748B; }
-
-        /* ===== Collapsible Sections ===== */
-        .settings-section {
-            background: #1E293B;
-            border-radius: 8px;
-            margin-bottom: 12px;
+        h2 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+            font-size: 1.1em;
         }
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 14px;
-            cursor: pointer;
-            user-select: none;
-            font-weight: 700;
-            font-size: 0.92em;
-            color: #F8FAFC;
-        }
-        .section-header:hover {
-            background: rgba(255,255,255,0.03);
-            border-radius: 8px 8px 0 0;
-        }
-        .section-chevron {
-            width: 16px;
-            height: 16px;
-            fill: #94A3B8;
-            transition: transform 0.3s;
-            flex-shrink: 0;
-        }
-        .section-chevron.collapsed {
-            transform: rotate(-90deg);
-        }
-        .section-content {
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-            max-height: 2000px;
-            padding: 0 14px 12px 14px;
-        }
-        .section-content.collapsed {
-            max-height: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-        }
-
-        /* ===== Color Group Sub-headers ===== */
         .color-group {
-            margin-bottom: 10px;
+            margin-bottom: 25px;
         }
         .color-group h3 {
-            margin: 8px 0 6px 0;
-            font-size: 0.78em;
-            color: #94A3B8;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            font-weight: 600;
+            margin: 0 0 10px 0;
+            font-size: 0.95em;
+            color: #aaa;
         }
-        .color-group h3:first-child {
-            margin-top: 0;
-        }
-
-        /* ===== Color Row ===== */
         .color-row {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            gap: 10px;
         }
         .color-row label {
-            width: 95px;
-            font-size: 0.82em;
-            color: #CBD5E1;
-            flex-shrink: 0;
+            width: 100px;
+            font-size: 0.9em;
         }
         .color-row input[type="color"] {
-            width: 36px;
-            height: 28px;
-            border: 2px solid #475569;
-            border-radius: 6px;
+            width: 40px;
+            height: 30px;
+            border: none;
+            border-radius: 4px;
             cursor: pointer;
             padding: 0;
-            appearance: none;
             -webkit-appearance: none;
             -moz-appearance: none;
-            background: none;
-        }
-        .color-row input[type="color"]:hover {
-            border-color: #64748B;
-        }
-        .color-row input[type="color"]::-webkit-color-swatch-wrapper {
-            padding: 2px;
-        }
-        .color-row input[type="color"]::-webkit-color-swatch {
-            border: none;
-            border-radius: 3px;
+            appearance: none;
+            opacity: 1;
         }
         .color-row input[type="color"]::-moz-color-swatch {
             border: none;
-            border-radius: 3px;
+            border-radius: 4px;
+            opacity: 1;
+        }
+        .color-row input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        .color-row input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 4px;
         }
         .color-row input[type="text"] {
-            width: 72px;
-            padding: 4px 6px;
-            border: 1px solid #475569;
+            width: 80px;
+            padding: 5px 8px;
+            border: 1px solid #333;
             border-radius: 4px;
-            background: #0F172A;
-            color: #F8FAFC;
+            background: #0f0f23;
+            color: #fff;
             font-family: monospace;
-            font-size: 0.82em;
+            font-size: 0.85em;
         }
         .color-row .copy-btn {
-            padding: 4px 10px;
-            background: #334155;
-            border: 1px solid #475569;
-            border-radius: 4px;
-            color: #94A3B8;
-            cursor: pointer;
-            font-size: 0.75em;
-            transition: all 0.2s;
-        }
-        .color-row .copy-btn:hover {
-            background: #475569;
-            color: #F8FAFC;
-        }
-
-        /* ===== Advanced Section in Left Panel ===== */
-        .advanced-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-        .advanced-group {
-            background: #0F172A;
-            border-radius: 6px;
-            padding: 10px;
-        }
-        .advanced-group h4 {
-            margin: 0 0 8px 0;
-            color: #94A3B8;
-            font-size: 0.78em;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-        }
-        .advanced-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 5px;
-            gap: 8px;
-        }
-        .advanced-row label {
-            width: 90px;
-            font-size: 0.82em;
-            color: #CBD5E1;
-        }
-        .advanced-row input[type="color"] {
-            width: 32px;
-            height: 24px;
-            border: 2px solid #475569;
-            border-radius: 4px;
-            cursor: pointer;
-            padding: 0;
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background: none;
-        }
-        .advanced-row input[type="color"]::-moz-color-swatch {
+            padding: 5px 10px;
+            background: #4a5568;
             border: none;
-            border-radius: 3px;
-        }
-        .advanced-row input[type="color"]::-webkit-color-swatch-wrapper {
-            padding: 1px;
-        }
-        .advanced-row input[type="color"]::-webkit-color-swatch {
-            border: none;
-            border-radius: 3px;
-        }
-        .advanced-row input[type="text"] {
-            width: 70px;
-            padding: 3px 6px;
-            border: 1px solid #475569;
             border-radius: 4px;
-            background: #0F172A;
-            color: #F8FAFC;
-            font-family: monospace;
+            color: #fff;
+            cursor: pointer;
             font-size: 0.8em;
         }
-        .advanced-row .copy-btn {
-            padding: 3px 8px;
-            font-size: 0.75em;
-            background: #334155;
-            border: 1px solid #475569;
-            border-radius: 4px;
-            color: #94A3B8;
-            cursor: pointer;
-            transition: all 0.2s;
+        .color-row .copy-btn:hover {
+            background: #5a6578;
         }
-        .advanced-row .copy-btn:hover {
-            background: #475569;
-            color: #F8FAFC;
-        }
-        .advanced-note {
-            font-size: 0.78em;
-            color: #64748B;
-            margin-bottom: 10px;
-        }
-
-        /* ===== Right Panel: Preview Settings ===== */
-        .preview-settings {
-            background: #1E293B;
-            border-radius: 8px;
-            padding: 14px;
-            margin-bottom: 12px;
-            flex-shrink: 0;
-        }
-        .preview-settings h2 {
-            margin: 0 0 10px 0;
-            font-size: 0.92em;
-            padding: 0;
-            border: none;
-            color: #F8FAFC;
-        }
-        .setting-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-        }
-        .setting-row:last-child {
-            margin-bottom: 0;
-        }
-        .setting-row label {
-            font-size: 0.82em;
-            color: #CBD5E1;
-            min-width: 70px;
-        }
-        .setting-row input[type="color"] {
-            width: 36px;
-            height: 28px;
-            border: 2px solid #475569;
-            border-radius: 6px;
-            cursor: pointer;
-            padding: 0;
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background: none;
-        }
-        .setting-row input[type="color"]::-moz-color-swatch {
-            border: none;
-            border-radius: 3px;
-        }
-        .setting-row input[type="color"]::-webkit-color-swatch-wrapper {
-            padding: 2px;
-        }
-        .setting-row input[type="color"]::-webkit-color-swatch {
-            border: none;
-            border-radius: 3px;
-        }
-        .setting-row input[type="range"] {
-            width: 100px;
-        }
-        .opacity-value {
-            font-family: monospace;
-            color: #94A3B8;
-            min-width: 40px;
-            font-size: 0.82em;
-        }
-
-        /* ===== Chat Window ===== */
         .chat-window {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
         }
         .chat-titlebar {
-            padding: 8px 14px;
+            padding: 10px 15px;
             font-size: 13px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 20px;
-            flex-shrink: 0;
         }
         .chat-titlebar .hex-display {
             display: flex;
@@ -375,21 +139,48 @@
             gap: 8px;
         }
         .chat-titlebar .hex-display span {
-            color: #94A3B8;
+            color: #aaa;
+        }
+        .bg-hex-display {
+            padding: 10px 0;
+            font-size: 13px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 8px;
+        }
+        .bg-hex-display span {
+            color: #aaa;
+        }
+        .hex-display code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.85em;
+        }
+        .hex-display .copy-btn-small {
+            padding: 2px 8px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 3px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.75em;
+        }
+        .hex-display .copy-btn-small:hover {
+            background: rgba(255,255,255,0.3);
         }
         .chat-preview {
-            flex: 1;
-            overflow-y: auto;
             padding: 15px;
             font-family: 'Corbel', sans-serif;
             font-weight: bold;
             font-size: 14px;
             line-height: 1.6;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
         }
-        .chat-preview.hidden-mode {
-            display: none;
-        }
-        .chat-message {
+                .chat-message {
             margin-bottom: 4px;
             word-wrap: break-word;
         }
@@ -400,48 +191,541 @@
             color: #888;
             font-size: 0.85em;
         }
-        .bold { font-weight: bold; }
-
-        /* ===== Hex Displays ===== */
-        .bg-hex-display {
-            padding: 8px 0;
-            font-size: 13px;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
+        .commands-section {
+            background: #16213e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
         }
-        .bg-hex-display span {
-            color: #94A3B8;
+        .command-output {
+            background: #0f0f23;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 300px;
+            overflow-y: auto;
         }
-        .hex-display code {
-            background: rgba(0,0,0,0.3);
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 0.85em;
-        }
-        .hex-display .copy-btn-small {
-            padding: 2px 8px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid #475569;
-            border-radius: 3px;
-            color: #94A3B8;
+        .copy-all-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: #4CAF50;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
             cursor: pointer;
+            font-size: 1em;
+        }
+        .copy-all-btn:hover {
+            background: #45a049;
+        }
+        .preview-settings {
+            background: #16213e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .preview-settings h2 {
+            margin-bottom: 15px;
+        }
+        .setting-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .setting-row label {
+            font-size: 0.9em;
+            min-width: 80px;
+        }
+        .setting-row input[type="color"] {
+            width: 40px;
+            height: 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 0;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            opacity: 1;
+        }
+        .setting-row input[type="color"]::-moz-color-swatch {
+            border: none;
+            border-radius: 4px;
+            opacity: 1;
+        }
+        .setting-row input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        .setting-row input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 4px;
+        }
+        .setting-row input[type="range"] {
+            width: 100px;
+        }
+        .opacity-value {
+            font-family: monospace;
+            color: #888;
+            min-width: 40px;
+        }
+        .section-divider {
+            border-top: 1px solid #333;
+            margin: 20px 0;
+            padding-top: 15px;
+        }
+        .copied-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+        .copied-toast.show {
+            opacity: 1;
+        }
+        .bold { font-weight: bold; }
+        .reset-btn {
+            padding: 8px 16px;
+            background: #4a5568;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .reset-btn:hover {
+            background: #5a6578;
+        }
+
+        /* Advanced Section Styles */
+        .advanced-section {
+            background: #16213e;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        .advanced-header {
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1a2744;
+            user-select: none;
+        }
+        .advanced-header:hover {
+            background: #1e2d4d;
+        }
+        .advanced-header h2 {
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+        .advanced-toggle {
+            font-size: 1.2em;
+            transition: transform 0.3s;
+        }
+        .advanced-toggle.open {
+            transform: rotate(180deg);
+        }
+        .advanced-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .advanced-content.open {
+            max-height: 2000px;
+        }
+        .advanced-inner {
+            padding: 20px;
+        }
+        .advanced-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .advanced-group {
+            background: #0f1829;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .advanced-group h4 {
+            margin: 0 0 12px 0;
+            color: #aaa;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .advanced-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            gap: 8px;
+        }
+        .advanced-row label {
+            width: 90px;
+            font-size: 0.85em;
+            color: #ccc;
+        }
+        .advanced-row input[type="color"] {
+            width: 32px;
+            height: 24px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            padding: 0;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            opacity: 1;
+        }
+        .advanced-row input[type="color"]::-moz-color-swatch {
+            border: none;
+            border-radius: 3px;
+            opacity: 1;
+        }
+        .advanced-row input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        .advanced-row input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 3px;
+        }
+        .advanced-row input[type="text"] {
+            width: 70px;
+            padding: 3px 6px;
+            border: 1px solid #333;
+            border-radius: 3px;
+            background: #0f0f23;
+            color: #fff;
+            font-family: monospace;
+            font-size: 0.8em;
+        }
+        .advanced-row .copy-btn {
+            padding: 3px 8px;
             font-size: 0.75em;
         }
-        .hex-display .copy-btn-small:hover {
-            background: rgba(255,255,255,0.2);
-            color: #F8FAFC;
+        .include-advanced {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        .include-advanced input {
+            width: 16px;
+            height: 16px;
         }
 
-        /* ===== Test Mode Toggle ===== */
-        .test-mode-toggle {
+        /* Action Buttons */
+        .action-btn {
+            padding: 8px 16px;
+            background: #4a5568;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .action-btn:hover {
+            background: #5a6578;
+        }
+        .export-btn {
+            background: #2d6a4f;
+        }
+        .export-btn:hover {
+            background: #40916c;
+        }
+        .import-btn {
+            background: #1d4e89;
+        }
+        .import-btn:hover {
+            background: #2a69a0;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+        }
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: #16213e;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+        }
+        .modal-header h2 {
+            margin: 0;
+            padding: 0;
+            border: none;
+            font-size: 1.2em;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: #fff;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .modal-body p {
+            margin: 0 0 12px 0;
+            color: #aaa;
+        }
+        .modal-body textarea {
+            width: 100%;
+            height: 150px;
+            padding: 12px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background: #0f0f23;
+            color: #fff;
+            font-family: monospace;
+            font-size: 0.85em;
+            resize: vertical;
+        }
+        .modal-body textarea:focus {
+            outline: none;
+            border-color: #4a5568;
+        }
+        .modal-error {
+            color: #ff6b6b;
+            margin-top: 10px;
+            font-size: 0.9em;
+            display: none;
+        }
+        .modal-error.show {
+            display: block;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 15px 20px;
+            border-top: 1px solid #333;
+        }
+
+        /* Changelog Styles */
+        .changelog-entry {
+            margin-bottom: 20px;
+        }
+        .changelog-entry:last-child {
+            margin-bottom: 0;
+        }
+        .changelog-version {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 8px;
-            flex-shrink: 0;
+        }
+        .changelog-version h3 {
+            margin: 0;
+            font-size: 1em;
+            color: #fff;
+        }
+        .changelog-date {
+            font-size: 0.8em;
+            color: #666;
+        }
+        .changelog-entry ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #aaa;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        .changelog-entry li {
+            margin-bottom: 4px;
+        }
+        #changelogLink:hover {
+            color: #aaa;
+            text-decoration: underline;
+        }
+
+        /* Tippy.js custom theme */
+        .tippy-box[data-theme~='custom'] {
+            background-color: #1a2744;
+            color: #eee;
+            font-size: 0.85em;
+            border: 1px solid #333;
+            border-radius: 6px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+        }
+        .tippy-box[data-theme~='custom'] .tippy-arrow {
+            color: #1a2744;
+        }
+        .tippy-box[data-theme~='custom'] .tippy-content {
+            padding: 8px 12px;
+        }
+
+        /* Preview Banner */
+        .preview-banner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #2d6a4f 0%, #1d4e89 100%);
+            color: white;
+            padding: 12px 20px;
+            z-index: 3000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        .preview-banner.visible {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .preview-banner-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .preview-banner-name {
+            font-weight: bold;
+        }
+        .preview-banner-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .preview-banner .btn-apply {
+            background: #4CAF50;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .preview-banner .btn-apply:hover {
+            background: #45a049;
+        }
+        .preview-banner .btn-cancel {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+        }
+        .preview-banner .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .preview-banner .btn-browse {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+        }
+        .preview-banner .btn-browse:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        body.preview-mode {
+            padding-top: 70px;
+        }
+
+        /* Theme Library Modal */
+        .theme-modal .modal-content {
+            max-width: 700px;
+        }
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .theme-card {
+            background: #0f1829;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .theme-card:hover {
+            border-color: #4a5568;
+            transform: translateY(-2px);
+        }
+        .theme-card.selected {
+            border-color: #4CAF50;
+        }
+        .theme-card-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        .theme-card-swatches {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .theme-swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .theme-card-description {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        /* Share button */
+        .share-btn {
+            background: #6b46c1;
+        }
+        .share-btn:hover {
+            background: #805ad5;
+        }
+
+        /* Test Mode Styles */
+        .test-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
         }
         .toggle-switch {
             position: relative;
@@ -458,7 +742,7 @@
             position: absolute;
             cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: #475569;
+            background: #4a5568;
             border-radius: 24px;
             transition: 0.3s;
         }
@@ -474,41 +758,41 @@
             transition: 0.3s;
         }
         .toggle-switch input:checked + .toggle-slider {
-            background: #22C55E;
+            background: #6b46c1;
         }
         .toggle-switch input:checked + .toggle-slider:before {
             transform: translateX(20px);
         }
         .toggle-label {
-            font-size: 0.82em;
-            color: #94A3B8;
+            font-size: 0.85em;
+            color: #aaa;
             user-select: none;
             cursor: pointer;
         }
         .toggle-label .mode-name {
-            color: #F8FAFC;
+            color: #fff;
             font-weight: bold;
         }
 
-        /* ===== Test Mode Container ===== */
         .test-mode-container {
             display: none;
             position: relative;
         }
         .test-mode-container.active {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            min-height: 0;
+            display: block;
         }
+        .chat-preview.hidden-mode {
+            display: none;
+        }
+
+        /* Textarea + overlay approach — textarea drives layout, overlay sits behind */
         .test-mode-wrap {
             position: relative;
             overflow: hidden;
-            flex: 1;
-            min-height: 0;
         }
         .test-mode-textarea,
         .test-mode-overlay {
+            /* Identical box model so they render text in the same positions */
             padding: 15px;
             margin: 0;
             border: none;
@@ -523,13 +807,12 @@
             tab-size: 4;
         }
         .test-mode-textarea {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            /* Textarea is the visible, interactive layer — drives scroll & height */
+            display: block;
+            position: relative;
             width: 100%;
-            height: 100%;
+            min-height: 400px;
+            max-height: 600px;
             overflow-y: auto;
             color: transparent;
             caret-color: #fff;
@@ -545,429 +828,51 @@
             font-style: italic;
         }
         .test-mode-overlay {
+            /* Overlay sits behind textarea, absolutely positioned to match exactly */
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            overflow-y: auto;
-            overflow-x: hidden;
+            overflow: hidden;
             pointer-events: none;
             z-index: 1;
         }
         .test-mode-wrap:focus-within {
-            box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.4);
+            box-shadow: inset 0 0 0 1px rgba(107, 70, 193, 0.4);
         }
 
         .test-mode-actions {
             display: flex;
             gap: 8px;
-            padding: 6px 0;
-            flex-shrink: 0;
+            padding: 8px 0;
         }
         .test-mode-actions .action-btn {
-            font-size: 0.78em;
-            padding: 5px 12px;
+            font-size: 0.8em;
+            padding: 6px 14px;
         }
         .test-copy-btn {
-            background: #4C1D95 !important;
-            border-color: #7C3AED !important;
-            color: #A78BFA !important;
+            background: #6b46c1 !important;
         }
         .test-copy-btn:hover {
-            background: #5B21B6 !important;
-            color: #C4B5FD !important;
+            background: #805ad5 !important;
         }
         .test-clear-btn {
-            background: #78350F !important;
-            border-color: #B45309 !important;
-            color: #FCD34D !important;
+            background: #744210 !important;
         }
         .test-clear-btn:hover {
-            background: #92400E !important;
-            color: #FDE68A !important;
+            background: #975a16 !important;
         }
         .test-mode-hint {
-            font-size: 0.72em;
-            color: #64748B;
+            font-size: 0.75em;
+            color: #555;
             margin-left: auto;
             align-self: center;
-        }
-
-        /* ===== Buttons ===== */
-        .action-btn {
-            padding: 6px 14px;
-            background: #334155;
-            border: 1px solid #475569;
-            border-radius: 6px;
-            color: #CBD5E1;
-            cursor: pointer;
-            font-size: 0.82em;
-            font-family: 'Inter', sans-serif;
-            transition: background 0.2s, border-color 0.2s;
-        }
-        .action-btn:hover {
-            background: #475569;
-            border-color: #64748B;
-            color: #F8FAFC;
-        }
-        .cta-btn {
-            background: #166534;
-            border-color: #22C55E;
-            color: #22C55E;
-        }
-        .cta-btn:hover {
-            background: #15803D;
-            color: #fff;
-        }
-        .share-btn {
-            background: #4C1D95;
-            border-color: #7C3AED;
-            color: #A78BFA;
-        }
-        .share-btn:hover {
-            background: #5B21B6;
-            color: #C4B5FD;
-        }
-        .view-commands-btn {
-            width: 100%;
-            margin-top: 6px;
-            flex-shrink: 0;
-        }
-
-        /* ===== Toast ===== */
-        .copied-toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #22C55E;
-            color: #0F172A;
-            padding: 10px 20px;
-            border-radius: 6px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 5000;
-            font-weight: 600;
-            font-size: 0.88em;
-        }
-        .copied-toast.show {
-            opacity: 1;
-        }
-
-        /* ===== Modal Styles ===== */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-        }
-        .modal.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-content {
-            background: #1E293B;
-            border: 1px solid #475569;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 18px;
-            border-bottom: 1px solid #475569;
-        }
-        .modal-header h2 {
-            margin: 0;
-            padding: 0;
-            border: none;
-            font-size: 1.1em;
-            color: #F8FAFC;
-        }
-        .modal-close {
-            background: none;
-            border: none;
-            color: #94A3B8;
-            font-size: 1.5em;
-            cursor: pointer;
-            padding: 0;
-            line-height: 1;
-        }
-        .modal-close:hover {
-            color: #F8FAFC;
-        }
-        .modal-body {
-            padding: 18px;
-        }
-        .modal-body p {
-            margin: 0 0 12px 0;
-            color: #94A3B8;
-            font-size: 0.88em;
-        }
-        .modal-body textarea {
-            width: 100%;
-            height: 150px;
-            padding: 12px;
-            border: 1px solid #475569;
-            border-radius: 6px;
-            background: #0F172A;
-            color: #F8FAFC;
-            font-family: monospace;
-            font-size: 0.85em;
-            resize: vertical;
-        }
-        .modal-body textarea:focus {
-            outline: none;
-            border-color: #64748B;
-        }
-        .modal-error {
-            color: #EF4444;
-            margin-top: 10px;
-            font-size: 0.88em;
-            display: none;
-        }
-        .modal-error.show {
-            display: block;
-        }
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            padding: 14px 18px;
-            border-top: 1px solid #475569;
-        }
-
-        /* ===== Command Output (in modal) ===== */
-        .command-output {
-            background: #0F172A;
-            padding: 14px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 0.85em;
-            white-space: pre-wrap;
-            word-break: break-all;
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #475569;
-            color: #CBD5E1;
-        }
-        .include-advanced {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 12px;
-            font-size: 0.85em;
-            color: #94A3B8;
-        }
-        .include-advanced input {
-            width: 16px;
-            height: 16px;
-            accent-color: #22C55E;
-        }
-
-        /* ===== Changelog Styles ===== */
-        .changelog-entry {
-            margin-bottom: 18px;
-        }
-        .changelog-entry:last-child {
-            margin-bottom: 0;
-        }
-        .changelog-version {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 6px;
-        }
-        .changelog-version h3 {
-            margin: 0;
-            font-size: 1em;
-            color: #F8FAFC;
-        }
-        .changelog-date {
-            font-size: 0.8em;
-            color: #64748B;
-        }
-        .changelog-entry ul {
-            margin: 0;
-            padding-left: 20px;
-            color: #94A3B8;
-            font-size: 0.88em;
-            line-height: 1.6;
-        }
-        .changelog-entry li {
-            margin-bottom: 3px;
-        }
-
-        /* ===== Theme Library Modal ===== */
-        .theme-modal .modal-content {
-            max-width: 700px;
-        }
-        .theme-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 12px;
-            margin-top: 12px;
-        }
-        .theme-card {
-            background: #0F172A;
-            border-radius: 8px;
-            padding: 14px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: border-color 0.2s, transform 0.2s;
-        }
-        .theme-card:hover {
-            border-color: #475569;
-            transform: translateY(-2px);
-        }
-        .theme-card.selected {
-            border-color: #22C55E;
-        }
-        .theme-card-name {
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #F8FAFC;
-            font-size: 0.92em;
-        }
-        .theme-card-swatches {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-        }
-        .theme-swatch {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .theme-card-description {
-            font-size: 0.78em;
-            color: #64748B;
-            margin-top: 10px;
-        }
-
-        /* ===== Preview Banner ===== */
-        .preview-banner {
-            display: none;
-            background: linear-gradient(135deg, #166534 0%, #4C1D95 100%);
-            color: white;
-            padding: 10px 20px;
-            z-index: 99;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            flex-shrink: 0;
-        }
-        .preview-banner.visible {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .preview-banner-text {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.88em;
-        }
-        .preview-banner-name {
-            font-weight: bold;
-        }
-        .preview-banner-actions {
-            display: flex;
-            gap: 8px;
-        }
-        .preview-banner .btn-apply {
-            background: #22C55E;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
-            color: #0F172A;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.85em;
-        }
-        .preview-banner .btn-apply:hover {
-            background: #16A34A;
-        }
-        .preview-banner .btn-cancel {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 6px 14px;
-            border-radius: 6px;
-            color: white;
-            cursor: pointer;
-            font-size: 0.85em;
-        }
-        .preview-banner .btn-cancel:hover {
-            background: rgba(255, 255, 255, 0.25);
-        }
-        .preview-banner .btn-browse {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 6px 14px;
-            border-radius: 6px;
-            color: white;
-            cursor: pointer;
-            font-size: 0.85em;
-        }
-        .preview-banner .btn-browse:hover {
-            background: rgba(255, 255, 255, 0.25);
-        }
-
-        /* ===== Tippy.js custom theme ===== */
-        .tippy-box[data-theme~='custom'] {
-            background-color: #1E293B;
-            color: #F8FAFC;
-            font-size: 0.82em;
-            border: 1px solid #475569;
-            border-radius: 6px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-        }
-        .tippy-box[data-theme~='custom'] .tippy-arrow {
-            color: #1E293B;
-        }
-        .tippy-box[data-theme~='custom'] .tippy-content {
-            padding: 8px 12px;
-        }
-
-        /* Changelog link in toolbar */
-        .toolbar-changelog {
-            color: #94A3B8;
-            font-size: 0.82em;
-            text-decoration: none;
-        }
-        .toolbar-changelog:hover {
-            color: #CBD5E1;
-            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <!-- Toolbar -->
-    <div class="toolbar">
-        <span class="toolbar-title">TICS Chat Color Picker</span>
-        <div class="toolbar-actions">
-            <button id="themesBtn" class="action-btn share-btn" data-tippy-content="Browse pre-made color themes">Themes</button>
-            <button id="shareBtn" class="action-btn share-btn" data-tippy-content="Generate a shareable link to your theme">Share</button>
-            <span class="toolbar-sep">|</span>
-            <button id="exportBtn" class="action-btn" data-tippy-content="Copy all settings as JSON to clipboard">Export</button>
-            <button id="importBtn" class="action-btn" data-tippy-content="Load settings from exported JSON">Import</button>
-            <button id="resetBtn" class="action-btn" data-tippy-content="Reset all colors to default values">Reset</button>
-            <span class="toolbar-sep">|</span>
-            <a href="#" id="changelogLink" class="toolbar-changelog" data-tippy-content="View recent updates">Changelog</a>
-        </div>
-    </div>
-
-    <!-- Preview Banner (below toolbar) -->
+    <!-- Preview Banner -->
     <div class="preview-banner" id="previewBanner">
         <div class="preview-banner-text">
             <span>Previewing:</span>
@@ -978,6 +883,19 @@
             <button class="btn-cancel" onclick="cancelPreview()">Keep My Colors</button>
             <button class="btn-browse" onclick="openThemeLibrary()" id="browseMoreBtn" style="display: none;">Browse More</button>
         </div>
+    </div>
+
+    <h1>TICS Chat Color Picker</h1>
+    <p class="subtitle">Total Immersive Chat System - Project Zomboid</p>
+    <div style="text-align: center; margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap;">
+        <button id="themesBtn" class="action-btn share-btn" data-tippy-content="Browse pre-made color themes">Themes</button>
+        <button id="shareBtn" class="action-btn share-btn" data-tippy-content="Generate a shareable link to your theme">Share</button>
+        <span style="color: #666;">|</span>
+        <button id="exportBtn" class="action-btn export-btn" data-tippy-content="Copy all settings as JSON to clipboard">Export</button>
+        <button id="importBtn" class="action-btn import-btn" data-tippy-content="Load settings from exported JSON">Import</button>
+        <button id="resetBtn" class="reset-btn" data-tippy-content="Reset all colors to default values">Reset to Defaults</button>
+        <span style="color: #666;">|</span>
+        <a href="#" id="changelogLink" style="color: #888; font-size: 0.85em; text-decoration: none;" data-tippy-content="View recent updates">Changelog</a>
     </div>
 
     <!-- Import Modal -->
@@ -994,7 +912,7 @@
             </div>
             <div class="modal-footer">
                 <button class="action-btn" onclick="closeImportModal()">Cancel</button>
-                <button class="action-btn cta-btn" onclick="loadImportedSettings()">Load Settings</button>
+                <button class="action-btn export-btn" onclick="loadImportedSettings()">Load Settings</button>
             </div>
         </div>
     </div>
@@ -1031,267 +949,193 @@
         </div>
     </div>
 
-    <!-- Commands Modal -->
-    <div id="commandsModal" class="modal">
-        <div class="modal-content" style="max-width: 600px;">
-            <div class="modal-header">
-                <h2>All Commands</h2>
-                <button class="modal-close" onclick="closeCommandsModal()">&times;</button>
+    <div class="container">
+        <div class="settings-panel">
+            <h2>Player Settings</h2>
+
+            <div class="color-group">
+                <h3>Your Name</h3>
+                <div class="color-row">
+                    <label data-tippy-content="Your character's name color as it appears in chat.">Name Color</label>
+                    <input type="color" id="nameColor" value="#FEFEFE">
+                    <input type="text" id="nameColorText" value="#FEFEFE">
+                    <button class="copy-btn" onclick="copyCommand('color')">Copy</button>
+                </div>
             </div>
-            <div class="modal-body">
-                <div class="command-output" id="commandOutput"></div>
-                <label class="include-advanced">
-                    <input type="checkbox" id="includeAdvanced"> Include advanced emote colors
-                </label>
+
+            <div class="color-group">
+                <h3>Text Formatting</h3>
+                <div class="color-row">
+                    <label data-tippy-content="Color of spoken dialogue inside quotation marks.">Dialogue " "</label>
+                    <input type="color" id="dialogueColor" value="#FEFEFE">
+                    <input type="text" id="dialogueColorText" value="#FEFEFE">
+                    <button class="copy-btn" onclick="copyCommand('dc')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label data-tippy-content="Color of italic text wrapped in single asterisks *like this*.">Italics *text*</label>
+                    <input type="color" id="italicColor" value="#ADD4A0">
+                    <input type="text" id="italicColorText" value="#ADD4A0">
+                    <button class="copy-btn" onclick="copyCommand('ic')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label data-tippy-content="Color of bold text wrapped in double asterisks **like this**.">Bold **text**</label>
+                    <input type="color" id="boldColor" value="#C3A4CF">
+                    <input type="text" id="boldColorText" value="#C3A4CF">
+                    <button class="copy-btn" onclick="copyCommand('bc')">Copy</button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button class="action-btn" onclick="closeCommandsModal()">Close</button>
-                <button class="action-btn cta-btn" onclick="copyAllCommands()">Copy All Commands</button>
+
+            <div class="section-divider"></div>
+            <h2>Chat Stream Colors (/emotecolor)</h2>
+
+            <div class="color-group">
+                <h3>Voice Channels</h3>
+                <div class="color-row">
+                    <label data-tippy-content="Whisper range (~1 tile). Very quiet, only nearby players can hear.">/whisper</label>
+                    <input type="color" id="whisperColor" value="#B4FFC5">
+                    <input type="text" id="whisperColorText" value="#B4FFC5">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'whisper')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label data-tippy-content="Low voice range (~3 tiles). Quiet speech for close conversations.">/low</label>
+                    <input type="color" id="lowColor" value="#B4FFFF">
+                    <input type="text" id="lowColorText" value="#B4FFFF">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'low')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label data-tippy-content="Normal speaking voice (~10 tiles). Default conversation range.">/say</label>
+                    <input type="color" id="sayColor" value="#FEFEFE">
+                    <input type="text" id="sayColorText" value="#FEFEFE">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'say')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label data-tippy-content="Long range voice (~20 tiles). Shouting to be heard at a distance.">/long</label>
+                    <input type="color" id="longColor" value="#FFD699">
+                    <input type="text" id="longColorText" value="#FFD699">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'long')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label data-tippy-content="Yelling range (~30 tiles). Loud yelling, may attract zombies!">/yell</label>
+                    <input type="color" id="yellColor" value="#E69696">
+                    <input type="text" id="yellColorText" value="#E69696">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'yell')">Copy</button>
+                </div>
+            </div>
+
+            <div class="color-group">
+                <h3>Voice Me</h3>
+                <div class="color-row">
+                    <label data-tippy-content="Emote at whisper range. Actions only visible to players very close by.">/mewhisper</label>
+                    <input type="color" id="mewhisperColor" value="#B4FFC5">
+                    <input type="text" id="mewhisperColorText" value="#B4FFC5">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'mewhisper')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label data-tippy-content="Emote at low voice range. Subtle actions for nearby players.">/melow</label>
+                    <input type="color" id="melowColor" value="#B4FFFF">
+                    <input type="text" id="melowColorText" value="#B4FFFF">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'melow')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label data-tippy-content="Standard emote at normal speaking range.">/me</label>
+                    <input type="color" id="menormalColor" value="#DFFDFF">
+                    <input type="text" id="menormalColorText" value="#DFFDFF">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'me', 'menormalColor')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label data-tippy-content="Emote at long range. Visible actions like waving or signaling.">/melong</label>
+                    <input type="color" id="melongColor" value="#FFD699">
+                    <input type="text" id="melongColorText" value="#FFD699">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'melong')">Copy</button>
+                </div>
+            </div>
+
+            <div class="color-group">
+                <h3>Roleplay Channels</h3>
+                <div class="color-row">
+                    <label data-tippy-content="Character actions and emotes. Describes what your character is doing.">/me</label>
+                    <input type="color" id="meColor" value="#DFFDFF">
+                    <input type="text" id="meColorText" value="#DFFDFF">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'me')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label data-tippy-content="Environment descriptions. Describes surroundings or events, not character actions.">/do</label>
+                    <input type="color" id="doColor" value="#E1DFFF">
+                    <input type="text" id="doColorText" value="#E1DFFF">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'do')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label data-tippy-content="Out of Character. Talk as yourself, not your character.">/ooc</label>
+                    <input type="color" id="oocColor" value="#92FF94">
+                    <input type="text" id="oocColorText" value="#92FF94">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'ooc')">Copy</button>
+                </div>
+            </div>
+
+            <div class="color-group">
+                <h3>Group Channels</h3>
+                <div class="color-row">
+                    <label data-tippy-content="Private Messages. Direct messages to a specific player.">/pm</label>
+                    <input type="color" id="pmColor" value="#FFB8DA">
+                    <input type="text" id="pmColorText" value="#FFB8DA">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'pm')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label data-tippy-content="Faction chat. Only members of your faction can see these messages.">/faction</label>
+                    <input type="color" id="factionColor" value="#AAFFAA">
+                    <input type="text" id="factionColorText" value="#AAFFAA">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'faction')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label data-tippy-content="Safehouse chat. Only players in your safehouse can see these messages.">/safehouse</label>
+                    <input type="color" id="safehouseColor" value="#FFFF60">
+                    <input type="text" id="safehouseColorText" value="#FFFF60">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'safehouse')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label data-tippy-content="General/Global chat. Server-wide messages visible to all players.">/general</label>
+                    <input type="color" id="generalColor" value="#BEBEFF">
+                    <input type="text" id="generalColorText" value="#BEBEFF">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'general')">Copy</button>
+                </div>
+                <div class="color-row">
+                    <label data-tippy-content="Admin messages. Server announcements and admin communications.">/admin</label>
+                    <input type="color" id="adminColor" value="#FFAAAA">
+                    <input type="text" id="adminColorText" value="#FFAAAA">
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'admin')">Copy</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Two-Panel Layout -->
-    <div class="app-layout">
-        <!-- Left Panel: Color Settings -->
-        <div class="panel-left">
-
-            <!-- Player Settings -->
-            <div class="settings-section">
-                <div class="section-header" onclick="toggleSection('section-player')">
-                    <span>Player Settings</span>
-                    <svg class="section-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                </div>
-                <div class="section-content" id="section-player">
-                    <div class="color-group">
-                        <h3>Your Name</h3>
-                        <div class="color-row">
-                            <label data-tippy-content="Your character's name color as it appears in chat.">Name Color</label>
-                            <input type="color" id="nameColor" value="#FEFEFE">
-                            <input type="text" id="nameColorText" value="#FEFEFE">
-                            <button class="copy-btn" onclick="copyCommand('color')">Copy</button>
-                        </div>
-                    </div>
-                    <div class="color-group">
-                        <h3>Text Formatting</h3>
-                        <div class="color-row">
-                            <label data-tippy-content="Color of spoken dialogue inside quotation marks.">Dialogue " "</label>
-                            <input type="color" id="dialogueColor" value="#FEFEFE">
-                            <input type="text" id="dialogueColorText" value="#FEFEFE">
-                            <button class="copy-btn" onclick="copyCommand('dc')">Copy</button>
-                        </div>
-                        <div class="color-row">
-                            <label data-tippy-content="Color of italic text wrapped in single asterisks *like this*.">Italics *text*</label>
-                            <input type="color" id="italicColor" value="#ADD4A0">
-                            <input type="text" id="italicColorText" value="#ADD4A0">
-                            <button class="copy-btn" onclick="copyCommand('ic')">Copy</button>
-                        </div>
-                        <div class="color-row">
-                            <label data-tippy-content="Color of bold text wrapped in double asterisks **like this**.">Bold **text**</label>
-                            <input type="color" id="boldColor" value="#C3A4CF">
-                            <input type="text" id="boldColorText" value="#C3A4CF">
-                            <button class="copy-btn" onclick="copyCommand('bc')">Copy</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Voice Channels -->
-            <div class="settings-section">
-                <div class="section-header" onclick="toggleSection('section-voice')">
-                    <span>Voice Channels</span>
-                    <svg class="section-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                </div>
-                <div class="section-content" id="section-voice">
-                    <div class="color-group">
-                        <div class="color-row">
-                            <label data-tippy-content="Whisper range (~1 tile). Very quiet, only nearby players can hear.">/whisper</label>
-                            <input type="color" id="whisperColor" value="#B4FFC5">
-                            <input type="text" id="whisperColorText" value="#B4FFC5">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'whisper')">Copy</button>
-                        </div>
-                        <div class="color-row">
-                            <label data-tippy-content="Low voice range (~3 tiles). Quiet speech for close conversations.">/low</label>
-                            <input type="color" id="lowColor" value="#B4FFFF">
-                            <input type="text" id="lowColorText" value="#B4FFFF">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'low')">Copy</button>
-                        </div>
-                        <div class="color-row">
-                            <label data-tippy-content="Normal speaking voice (~10 tiles). Default conversation range.">/say</label>
-                            <input type="color" id="sayColor" value="#FEFEFE">
-                            <input type="text" id="sayColorText" value="#FEFEFE">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'say')">Copy</button>
-                        </div>
-                        <div class="color-row">
-                            <label data-tippy-content="Long range voice (~20 tiles). Shouting to be heard at a distance.">/long</label>
-                            <input type="color" id="longColor" value="#FFD699">
-                            <input type="text" id="longColorText" value="#FFD699">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'long')">Copy</button>
-                        </div>
-                        <div class="color-row">
-                            <label data-tippy-content="Yelling range (~30 tiles). Loud yelling, may attract zombies!">/yell</label>
-                            <input type="color" id="yellColor" value="#E69696">
-                            <input type="text" id="yellColorText" value="#E69696">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'yell')">Copy</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Voice Me -->
-            <div class="settings-section">
-                <div class="section-header" onclick="toggleSection('section-voiceme')">
-                    <span>Voice Me</span>
-                    <svg class="section-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                </div>
-                <div class="section-content" id="section-voiceme">
-                    <div class="color-group">
-                        <div class="color-row">
-                            <label data-tippy-content="Emote at whisper range. Actions only visible to players very close by.">/mewhisper</label>
-                            <input type="color" id="mewhisperColor" value="#B4FFC5">
-                            <input type="text" id="mewhisperColorText" value="#B4FFC5">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'mewhisper')">Copy</button>
-                        </div>
-                        <div class="color-row">
-                            <label data-tippy-content="Emote at low voice range. Subtle actions for nearby players.">/melow</label>
-                            <input type="color" id="melowColor" value="#B4FFFF">
-                            <input type="text" id="melowColorText" value="#B4FFFF">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'melow')">Copy</button>
-                        </div>
-                        <div class="color-row">
-                            <label data-tippy-content="Standard emote at normal speaking range.">/me</label>
-                            <input type="color" id="menormalColor" value="#DFFDFF">
-                            <input type="text" id="menormalColorText" value="#DFFDFF">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'me', 'menormalColor')">Copy</button>
-                        </div>
-                        <div class="color-row">
-                            <label data-tippy-content="Emote at long range. Visible actions like waving or signaling.">/melong</label>
-                            <input type="color" id="melongColor" value="#FFD699">
-                            <input type="text" id="melongColorText" value="#FFD699">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'melong')">Copy</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Roleplay Channels -->
-            <div class="settings-section">
-                <div class="section-header" onclick="toggleSection('section-rp')">
-                    <span>Roleplay Channels</span>
-                    <svg class="section-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                </div>
-                <div class="section-content" id="section-rp">
-                    <div class="color-group">
-                        <div class="color-row">
-                            <label data-tippy-content="Character actions and emotes. Describes what your character is doing.">/me</label>
-                            <input type="color" id="meColor" value="#DFFDFF">
-                            <input type="text" id="meColorText" value="#DFFDFF">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'me')">Copy</button>
-                        </div>
-                        <div class="color-row">
-                            <label data-tippy-content="Environment descriptions. Describes surroundings or events, not character actions.">/do</label>
-                            <input type="color" id="doColor" value="#E1DFFF">
-                            <input type="text" id="doColorText" value="#E1DFFF">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'do')">Copy</button>
-                        </div>
-                        <div class="color-row">
-                            <label data-tippy-content="Out of Character. Talk as yourself, not your character.">/ooc</label>
-                            <input type="color" id="oocColor" value="#92FF94">
-                            <input type="text" id="oocColorText" value="#92FF94">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'ooc')">Copy</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Group Channels -->
-            <div class="settings-section">
-                <div class="section-header" onclick="toggleSection('section-group')">
-                    <span>Group Channels</span>
-                    <svg class="section-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                </div>
-                <div class="section-content" id="section-group">
-                    <div class="color-group">
-                        <div class="color-row">
-                            <label data-tippy-content="Private Messages. Direct messages to a specific player.">/pm</label>
-                            <input type="color" id="pmColor" value="#FFB8DA">
-                            <input type="text" id="pmColorText" value="#FFB8DA">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'pm')">Copy</button>
-                        </div>
-                        <div class="color-row">
-                            <label data-tippy-content="Faction chat. Only members of your faction can see these messages.">/faction</label>
-                            <input type="color" id="factionColor" value="#AAFFAA">
-                            <input type="text" id="factionColorText" value="#AAFFAA">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'faction')">Copy</button>
-                        </div>
-                        <div class="color-row">
-                            <label data-tippy-content="Safehouse chat. Only players in your safehouse can see these messages.">/safehouse</label>
-                            <input type="color" id="safehouseColor" value="#FFFF60">
-                            <input type="text" id="safehouseColorText" value="#FFFF60">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'safehouse')">Copy</button>
-                        </div>
-                        <div class="color-row">
-                            <label data-tippy-content="General/Global chat. Server-wide messages visible to all players.">/general</label>
-                            <input type="color" id="generalColor" value="#BEBEFF">
-                            <input type="text" id="generalColorText" value="#BEBEFF">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'general')">Copy</button>
-                        </div>
-                        <div class="color-row">
-                            <label data-tippy-content="Admin messages. Server announcements and admin communications.">/admin</label>
-                            <input type="color" id="adminColor" value="#FFAAAA">
-                            <input type="text" id="adminColorText" value="#FFAAAA">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'admin')">Copy</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Advanced Emotes -->
-            <div class="settings-section">
-                <div class="section-header" onclick="toggleSection('section-advanced')">
-                    <span>Advanced Emotes</span>
-                    <svg class="section-chevron collapsed" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                </div>
-                <div class="section-content collapsed" id="section-advanced">
-                    <p class="advanced-note">Fine-tune colors for specific message lengths and variations. These override the basic emote colors above.</p>
-                    <div class="advanced-grid" id="advancedGrid">
-                        <!-- Generated by JavaScript -->
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Right Panel: Preview -->
-        <div class="panel-right">
-            <!-- Preview Settings -->
+        <div class="preview-panel">
             <div class="preview-settings">
                 <h2>Preview Settings</h2>
                 <div class="setting-row">
                     <label>Title Bar:</label>
                     <input type="color" id="titlebarColor" value="#2d2d2d">
-                    <input type="text" id="titlebarColorText" value="#2D2D2D" style="width: 72px; padding: 4px 6px; border: 1px solid #475569; border-radius: 4px; background: #0F172A; color: #F8FAFC; font-family: monospace; font-size: 0.82em;">
+                    <input type="text" id="titlebarColorText" value="#2D2D2D" style="width: 80px; padding: 5px 8px; border: 1px solid #333; border-radius: 4px; background: #0f0f23; color: #fff; font-family: monospace; font-size: 0.85em;">
                 </div>
                 <div class="setting-row">
                     <label>Background:</label>
                     <input type="color" id="bgColor" value="#000000">
-                    <input type="text" id="bgColorText" value="#000000" style="width: 72px; padding: 4px 6px; border: 1px solid #475569; border-radius: 4px; background: #0F172A; color: #F8FAFC; font-family: monospace; font-size: 0.82em;">
+                    <input type="text" id="bgColorText" value="#000000" style="width: 80px; padding: 5px 8px; border: 1px solid #333; border-radius: 4px; background: #0f0f23; color: #fff; font-family: monospace; font-size: 0.85em;">
                     <label style="min-width: auto;">Opacity:</label>
                     <input type="range" id="bgOpacity" min="0" max="100" value="75">
                     <span class="opacity-value" id="opacityValue">75%</span>
                 </div>
-                <div class="test-mode-toggle">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="testModeToggle">
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <label class="toggle-label" for="testModeToggle">
-                        <span id="testModeLabel"><span class="mode-name">Examples</span> — sample chat messages</span>
-                    </label>
-                </div>
             </div>
 
-            <!-- Chat Window -->
+            <!-- Test Mode Toggle -->
+            <div class="test-mode-toggle">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="testModeToggle">
+                    <span class="toggle-slider"></span>
+                </label>
+                <label class="toggle-label" for="testModeToggle">
+                    <span id="testModeLabel"><span class="mode-name">Examples</span> — sample chat messages</span>
+                </label>
+            </div>
+
             <div class="chat-window" id="chatWindow">
                 <div class="chat-titlebar" id="chatTitlebar">
                     <span>Chat</span>
@@ -1312,23 +1156,43 @@
                     </div>
                 </div>
             </div>
-
-            <!-- BG Hex Display -->
-            <div class="bg-hex-display">
-                <span>Background:</span>
-                <code id="bgHex">#000000 @ 75%</code>
-                <button class="copy-btn-small" onclick="copyHex('bg')">Copy</button>
-            </div>
-
             <!-- Test Mode Actions (shown only in test mode) -->
             <div class="test-mode-actions" id="testModeActions" style="display: none;">
                 <button class="action-btn test-copy-btn" onclick="copyTestText()">Copy Text</button>
                 <button class="action-btn test-clear-btn" onclick="clearTestEditor()">Clear</button>
                 <span class="test-mode-hint">Spellcheck on &bull; Commands: /me /melow /melong /mewhisper /do /whisper /say /low /long /yell /ooc /pm /faction /safehouse /general /admin</span>
             </div>
+            <div class="bg-hex-display">
+                <span>Background:</span>
+                <code id="bgHex">#000000 @ 75%</code>
+                <button class="copy-btn-small" onclick="copyHex('bg')">Copy</button>
+            </div>
 
-            <!-- View All Commands Button -->
-            <button class="action-btn cta-btn view-commands-btn" onclick="openCommandsModal()">View All Commands</button>
+            <div class="commands-section">
+                <h2>All Commands</h2>
+                <div class="command-output" id="commandOutput"></div>
+                <label class="include-advanced">
+                    <input type="checkbox" id="includeAdvanced">
+                    Include advanced emote colors in commands
+                </label>
+                <button class="copy-all-btn" onclick="copyAllCommands()">Copy All Commands</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Section -->
+    <div class="advanced-section" style="max-width: 1400px; margin: 20px auto 0;">
+        <div class="advanced-header" onclick="toggleAdvanced()">
+            <h2>Advanced Emote Colors</h2>
+            <span class="advanced-toggle" id="advancedToggle">▼</span>
+        </div>
+        <div class="advanced-content" id="advancedContent">
+            <div class="advanced-inner">
+                <p style="color: #888; margin-bottom: 20px;">Fine-tune colors for specific message lengths and variations. These override the basic emote colors above.</p>
+                <div class="advanced-grid" id="advancedGrid">
+                    <!-- Generated by JavaScript -->
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1400,36 +1264,6 @@
             bgColor: '#000000',
             bgOpacity: '75'
         };
-
-        // ========================================
-        // Collapsible Sections
-        // ========================================
-
-        function toggleSection(sectionId) {
-            const content = document.getElementById(sectionId);
-            const header = content.previousElementSibling;
-            const chevron = header.querySelector('.section-chevron');
-            content.classList.toggle('collapsed');
-            chevron.classList.toggle('collapsed');
-
-            // Lazy load advanced inputs on first expand
-            if (sectionId === 'section-advanced' && !advancedGenerated) {
-                generateAdvancedInputs();
-                advancedGenerated = true;
-            }
-        }
-
-        // ========================================
-        // Commands Modal
-        // ========================================
-
-        function openCommandsModal() {
-            updateCommandOutput();
-            document.getElementById('commandsModal').classList.add('show');
-        }
-        function closeCommandsModal() {
-            document.getElementById('commandsModal').classList.remove('show');
-        }
 
         // ========================================
         // Utility Functions
@@ -1572,7 +1406,7 @@
             document.getElementById('titlebarHex').textContent = titlebarColor.toUpperCase();
             document.getElementById('titlebarColorText').value = titlebarColor.toUpperCase();
 
-
+            
             // Convert hex to rgba for chat background
             const r = parseInt(bgColor.slice(1, 3), 16);
             const g = parseInt(bgColor.slice(3, 5), 16);
@@ -1647,7 +1481,7 @@
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:09]</span>
-                    <span style="color: ${meColor}">* <span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span style="color: ${italicColor}">*looks around nervously*</span> <span style="color: ${dialogueColor}">"Is anyone there? <span style="color: ${italicColor};font-style:italic">*Please...*</span>"</span></span>
+                    <span style="color: ${meColor}">* <span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span style="color: ${italicColor}">*looks around nervously*</span> <span style="color: ${dialogueColor}">"Is anyone there?"</span></span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:10]</span>
@@ -1731,6 +1565,21 @@
 
         // Track if advanced section has been generated
         let advancedGenerated = false;
+
+        // Toggle advanced section (lazy loads inputs on first open)
+        function toggleAdvanced() {
+            const content = document.getElementById('advancedContent');
+            const toggle = document.getElementById('advancedToggle');
+
+            // Lazy load: generate inputs only when first opened
+            if (!advancedGenerated) {
+                generateAdvancedInputs();
+                advancedGenerated = true;
+            }
+
+            content.classList.toggle('open');
+            toggle.classList.toggle('open');
+        }
 
         // Generate advanced emote color inputs
         function generateAdvancedInputs() {
@@ -1947,12 +1796,6 @@
             }
         });
 
-        document.getElementById('commandsModal').addEventListener('click', (e) => {
-            if (e.target.id === 'commandsModal') {
-                closeCommandsModal();
-            }
-        });
-
         // Close modal on Escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
@@ -1965,49 +1808,11 @@
                 if (document.getElementById('themeModal').classList.contains('show')) {
                     closeThemeLibraryAndRestore();
                 }
-                if (document.getElementById('commandsModal').classList.contains('show')) {
-                    closeCommandsModal();
-                }
             }
         });
 
         // Changelog data - add new entries at the top
         const changelog = [
-            {
-                version: '2.0.1',
-                date: '2026-03-26',
-                changes: [
-                    'Test Mode: *italic* and **bold** formatting now renders inside "dialogue" quotes',
-                    'Preview examples updated to showcase italic inside dialogue'
-                ]
-            },
-            {
-                version: '2.0.0',
-                date: '2026-03-23',
-                changes: [
-                    'Full UI redesign: split-panel layout with settings on the left and live preview on the right',
-                    'Right panel is fixed to the viewport — no more scrolling away from your chat preview',
-                    'Left panel scrolls independently with all color settings in collapsible sections',
-                    'Sticky toolbar with quick access to Themes, Share, Export, Import, and Reset',
-                    'Commands output moved to a dedicated modal via the "View All Commands" button',
-                    'Test Mode: line breaks now inherit the previous command\'s color instead of resetting to /say',
-                    'Refreshed dark color palette designed to stay out of the way of your color choices',
-                    'All existing features preserved: themes, share links, import/export, localStorage persistence'
-                ]
-            },
-            {
-                version: '1.3.0',
-                date: '2026-03-22',
-                changes: [
-                    'Added Test Mode: toggle from examples to a live RP notepad',
-                    'Type with /commands and see colors applied in real-time',
-                    'Supports all TICS commands: /me, /melow, /melong, /mewhisper, /do, /whisper, /say, /low, /long, /yell, /ooc, /pm, /faction, /safehouse, /general, /admin',
-                    'Inline formatting: **bold**, *italic*, and "dialogue" colored live',
-                    'Quick-copy button copies raw text for pasting into PZ chat',
-                    'Content and toggle state persist across page reloads',
-                    'Browser spellcheck enabled in test mode'
-                ]
-            },
             {
                 version: '1.2.2',
                 date: '2026-01-26',
@@ -2267,12 +2072,14 @@
         function showPreviewBanner(themeName, showBrowseMore = false) {
             document.getElementById('previewThemeName').textContent = themeName;
             document.getElementById('previewBanner').classList.add('visible');
+            document.body.classList.add('preview-mode');
             document.getElementById('browseMoreBtn').style.display = showBrowseMore ? 'inline-block' : 'none';
         }
 
         // Hide the preview banner
         function hidePreviewBanner() {
             document.getElementById('previewBanner').classList.remove('visible');
+            document.body.classList.remove('preview-mode');
         }
 
         // Apply the previewed theme (commit it)
@@ -2322,8 +2129,7 @@
             selectedThemeId = null;
             renderThemeGrid();
             document.getElementById('themeModal').classList.add('show');
-            const applyBtn = document.getElementById('applyThemeBtn');
-            if (applyBtn) applyBtn.style.display = 'none';
+            document.getElementById('applyThemeBtn').style.display = 'none';
         }
 
         function closeThemeLibrary() {
@@ -2654,7 +2460,7 @@
         // Initialize
         applyDefaults();
         initColorInputs();
-        // Note: generateAdvancedInputs() is now lazy loaded in toggleSection()
+        // Note: generateAdvancedInputs() is now lazy loaded in toggleAdvanced()
         loadPreferences();
         initColorInputsWithSave();
         renderChatPreview();
@@ -2734,39 +2540,6 @@
             return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        // Parse bold/italic inside a dialogue span (no recursive dialogue)
-        function parseInnerFormatting(text, fallbackColor, boldColor, italicColor) {
-            let result = '';
-            let i = 0;
-            const len = text.length;
-            while (i < len) {
-                // **bold**
-                if (text[i] === '*' && i + 1 < len && text[i + 1] === '*') {
-                    const end = text.indexOf('**', i + 2);
-                    if (end !== -1) {
-                        const inner = escHTML(text.substring(i + 2, end));
-                        result += `<span style="color:${boldColor};font-weight:bold">**${inner}**</span>`;
-                        i = end + 2;
-                        continue;
-                    }
-                }
-                // *italic*
-                if (text[i] === '*' && (i === 0 || text[i - 1] !== '*') && i + 1 < len && text[i + 1] !== '*') {
-                    const end = text.indexOf('*', i + 1);
-                    if (end !== -1 && text[end + 1] !== '*') {
-                        const inner = escHTML(text.substring(i + 1, end));
-                        result += `<span style="color:${italicColor};font-style:italic">*${inner}*</span>`;
-                        i = end + 1;
-                        continue;
-                    }
-                }
-                // Regular character — keep dialogue color
-                result += escHTML(text[i]);
-                i++;
-            }
-            return result;
-        }
-
         // Parse inline formatting: **bold**, *italic*, "dialogue"
         function parseInlineFormatting(text, baseColor) {
             const boldColor = document.getElementById('boldColor').value;
@@ -2798,13 +2571,12 @@
                         continue;
                     }
                 }
-                // "dialogue" — parse inner content for bold/italic
+                // "dialogue"
                 if (text[i] === '"') {
                     const end = text.indexOf('"', i + 1);
                     if (end !== -1) {
-                        const innerRaw = text.substring(i + 1, end);
-                        const innerFormatted = parseInnerFormatting(innerRaw, dialogueColor, boldColor, italicColor);
-                        result += `<span style="color:${dialogueColor}">&quot;${innerFormatted}&quot;</span>`;
+                        const inner = escHTML(text.substring(i + 1, end));
+                        result += `<span style="color:${dialogueColor}">&quot;${inner}&quot;</span>`;
                         i = end + 1;
                         continue;
                     }
@@ -2817,8 +2589,7 @@
         }
 
         // Colorize a single line of text — keeps raw text as-is, just applies color
-        // Returns { html, color } so the caller can track the active color across lines
-        function colorizeLine(rawLine, inheritedColor) {
+        function colorizeLine(rawLine) {
             const commandMap = getCommandColorMap();
             const lineLower = rawLine.toLowerCase();
 
@@ -2828,26 +2599,23 @@
                     const cmdText = rawLine.substring(0, entry.cmd.length);
                     const messageText = rawLine.substring(entry.cmd.length);
                     const formatted = parseInlineFormatting(messageText, baseColor);
-                    return { html: `<span style="color:${baseColor}"><span style="opacity:0.6">${escHTML(cmdText)}</span>${formatted}</span>`, color: baseColor };
+                    return `<span style="color:${baseColor}"><span style="opacity:0.6">${escHTML(cmdText)}</span>${formatted}</span>`;
                 }
             }
 
-            // No command detected — inherit the previous command's color, or fall back to /say
-            const fallback = inheritedColor || document.getElementById('sayColor').value;
-            const formatted = parseInlineFormatting(rawLine, fallback);
-            return { html: `<span style="color:${fallback}">${formatted}</span>`, color: fallback };
+            // No command detected — treat as plain /say style
+            const sayColor = document.getElementById('sayColor').value;
+            const formatted = parseInlineFormatting(rawLine, sayColor);
+            return `<span style="color:${sayColor}">${formatted}</span>`;
         }
 
         // Update the colored overlay from textarea content
         function updateOverlay() {
             const rawText = testTextarea.value;
             const lines = rawText.split('\n');
-            let activeColor = null;
             const html = lines.map(line => {
-                if (line === '') return '\n'; // preserve empty lines (keep activeColor)
-                const result = colorizeLine(line, activeColor);
-                activeColor = result.color;
-                return result.html;
+                if (line === '') return '\n'; // preserve empty lines
+                return colorizeLine(line);
             }).join('\n');
 
             // Append a trailing newline so the overlay height matches textarea
@@ -2903,6 +2671,7 @@
             const b = parseInt(bgColor.slice(5, 7), 16);
             const bg = `rgba(${r}, ${g}, ${b}, ${bgOpacity})`;
             testOverlay.style.background = bg;
+            // Textarea is transparent but sits on the same background
         }
 
         // Copy raw text from textarea

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 skills/ui-ux-pro-max/scripts/search.py \"gaming utility dark tool color picker settings\" --design-system -p \"TICS Chat Colors\")",
+      "Bash(python skills/ui-ux-pro-max/scripts/search.py \"gaming utility dark tool color picker settings\" --design-system -p \"TICS Chat Colors\")",
+      "Bash(python \"C:\\\\Users\\\\Taylor\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"gaming utility dark tool color picker settings\" --design-system -p \"TICS Chat Colors\")",
+      "mcp__Claude_Preview__preview_start"
+    ]
+  }
+}

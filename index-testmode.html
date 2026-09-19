@@ -1028,7 +1028,7 @@
                     <label data-tippy-content="Emote at whisper range. Actions only visible to players very close by.">/mewhisper</label>
                     <input type="color" id="mewhisperColor" value="#B4FFC5">
                     <input type="text" id="mewhisperColorText" value="#B4FFC5">
-                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'mewhisper')">Copy</button>
+                    <button class="copy-btn" onclick="copyCommand('emotecolor', 'whisperme', 'mewhisperColor')">Copy</button>
                 </div>
                 <div class="color-row">
                     <label data-tippy-content="Emote at low voice range. Subtle actions for nearby players.">/melow</label>
@@ -1213,7 +1213,7 @@
             me: { id: 'meColor', command: 'emotecolor me' },
             do: { id: 'doColor', command: 'emotecolor do' },
             ooc: { id: 'oocColor', command: 'emotecolor ooc' },
-            mewhisper: { id: 'mewhisperColor', command: 'emotecolor mewhisper' },
+            mewhisper: { id: 'mewhisperColor', command: 'emotecolor whisperme' },
             melow: { id: 'melowColor', command: 'emotecolor melow' },
             menormal: { id: 'menormalColor', command: 'emotecolor me' },
             melong: { id: 'melongColor', command: 'emotecolor melong' },

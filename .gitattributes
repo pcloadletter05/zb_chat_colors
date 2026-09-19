@@ -1,0 +1,12 @@
+# Keep the repository canonical: LF in git, regardless of the editor or OS
+# that wrote the file. Prevents whole-file CRLF churn in diffs.
+* text=auto eol=lf
+
+# Binary assets — never touch line endings
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary

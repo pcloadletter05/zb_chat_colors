@@ -1150,7 +1150,7 @@
                             <label data-tippy-content="Emote at whisper range. Actions only visible to players very close by.">/mewhisper</label>
                             <input type="color" id="mewhisperColor" value="#B4FFC5">
                             <input type="text" id="mewhisperColorText" value="#B4FFC5">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'mewhisper')">Copy</button>
+                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'whisperme', 'mewhisperColor')">Copy</button>
                         </div>
                         <div class="color-row">
                             <label data-tippy-content="Emote at low voice range. Subtle actions for nearby players.">/melow</label>
@@ -1349,7 +1349,7 @@
             me: { id: 'meColor', command: 'emotecolor me' },
             do: { id: 'doColor', command: 'emotecolor do' },
             ooc: { id: 'oocColor', command: 'emotecolor ooc' },
-            mewhisper: { id: 'mewhisperColor', command: 'emotecolor mewhisper' },
+            mewhisper: { id: 'mewhisperColor', command: 'emotecolor whisperme' },
             melow: { id: 'melowColor', command: 'emotecolor melow' },
             menormal: { id: 'menormalColor', command: 'emotecolor me' },
             melong: { id: 'melongColor', command: 'emotecolor melong' },
@@ -1973,6 +1973,14 @@
 
         // Changelog data - add new entries at the top
         const changelog = [
+            {
+                version: '2.0.2',
+                date: '2026-09-19',
+                changes: [
+                    'Fixed the /mewhisper color command: it now outputs /emotecolor whisperme instead of /emotecolor mewhisper',
+                    'Applies to both the individual Copy button and Copy All Commands'
+                ]
+            },
             {
                 version: '2.0.1',
                 date: '2026-03-26',

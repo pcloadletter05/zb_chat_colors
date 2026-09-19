@@ -196,7 +196,7 @@
             background: #334155;
             border: 1px solid #475569;
             border-radius: 4px;
-            color: #94A3B8;
+            color: #CBD5E1;
             cursor: pointer;
             font-size: 0.75em;
             transition: all 0.2s;
@@ -274,7 +274,7 @@
             background: #334155;
             border: 1px solid #475569;
             border-radius: 4px;
-            color: #94A3B8;
+            color: #CBD5E1;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -284,7 +284,7 @@
         }
         .advanced-note {
             font-size: 0.78em;
-            color: #64748B;
+            color: #94A3B8;
             margin-bottom: 10px;
         }
 
@@ -421,16 +421,18 @@
             border-radius: 3px;
             font-size: 0.85em;
         }
-        .hex-display .copy-btn-small {
+        /* Not scoped to .hex-display: the Copy button under the chat window
+           lives in .bg-hex-display and needs the same look. */
+        .copy-btn-small {
             padding: 2px 8px;
             background: rgba(255,255,255,0.1);
             border: 1px solid #475569;
             border-radius: 3px;
-            color: #94A3B8;
+            color: #CBD5E1;
             cursor: pointer;
             font-size: 0.75em;
         }
-        .hex-display .copy-btn-small:hover {
+        .copy-btn-small:hover {
             background: rgba(255,255,255,0.2);
             color: #F8FAFC;
         }
@@ -540,7 +542,7 @@
             top: 15px;
             left: 15px;
             right: 15px;
-            color: #555;
+            color: #808080;
             font-style: italic;
             pointer-events: none;
         }
@@ -561,11 +563,11 @@
         .test-copy-btn {
             background: #4C1D95 !important;
             border-color: #7C3AED !important;
-            color: #A78BFA !important;
+            color: #C4B5FD !important;
         }
         .test-copy-btn:hover {
             background: #5B21B6 !important;
-            color: #C4B5FD !important;
+            color: #DDD6FE !important;
         }
         .test-clear-btn {
             background: #78350F !important;
@@ -578,7 +580,7 @@
         }
         .test-mode-hint {
             font-size: 0.72em;
-            color: #64748B;
+            color: #94A3B8;
             margin-left: auto;
             align-self: center;
         }
@@ -603,7 +605,7 @@
         .cta-btn {
             background: #166534;
             border-color: #22C55E;
-            color: #22C55E;
+            color: #86EFAC;
         }
         .cta-btn:hover {
             background: #15803D;
@@ -612,11 +614,11 @@
         .share-btn {
             background: #4C1D95;
             border-color: #7C3AED;
-            color: #A78BFA;
+            color: #C4B5FD;
         }
         .share-btn:hover {
             background: #5B21B6;
-            color: #C4B5FD;
+            color: #DDD6FE;
         }
         .view-commands-btn {
             width: 100%;
@@ -625,22 +627,58 @@
         }
 
         /* ===== Toast ===== */
+        /* The toast is always in the page, just transparent. While hidden it must
+           not catch clicks (it used to swallow clicks on the right end of the
+           "View All Commands" button), and it sits above that button, not on it. */
         .copied-toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 60px;
             right: 20px;
             background: #22C55E;
             color: #0F172A;
             padding: 10px 20px;
             border-radius: 6px;
             opacity: 0;
+            pointer-events: none;
             transition: opacity 0.3s;
             z-index: 5000;
             font-weight: 600;
             font-size: 0.88em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         .copied-toast.show {
             opacity: 1;
+            pointer-events: auto;
+        }
+        .copied-toast.error {
+            background: #B91C1C;
+            color: #FFFFFF;
+        }
+        .toast-action {
+            background: #0F172A;
+            color: #F8FAFC;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 10px;
+            font: inherit;
+            font-size: 0.95em;
+            cursor: pointer;
+        }
+        .toast-action:hover {
+            background: #1E293B;
+        }
+
+        /* ===== Keyboard focus ===== */
+        .section-header:focus-visible {
+            outline: 2px solid #22C55E;
+            outline-offset: -2px;
+            border-radius: 8px;
+        }
+        .toggle-switch input:focus-visible + .toggle-slider {
+            outline: 2px solid #22C55E;
+            outline-offset: 2px;
         }
 
         /* ===== Modal Styles ===== */
@@ -783,7 +821,7 @@
         }
         .changelog-date {
             font-size: 0.8em;
-            color: #64748B;
+            color: #94A3B8;
         }
         .changelog-entry ul {
             margin: 0;
@@ -840,7 +878,7 @@
         }
         .theme-card-description {
             font-size: 0.78em;
-            color: #64748B;
+            color: #94A3B8;
             margin-top: 10px;
         }
 
@@ -869,6 +907,9 @@
         }
         .preview-banner-name {
             font-weight: bold;
+        }
+        .preview-banner-note {
+            opacity: 0.85;
         }
         .preview-banner-actions {
             display: flex;
@@ -961,6 +1002,7 @@
         <div class="preview-banner-text">
             <span>Previewing:</span>
             <span class="preview-banner-name" id="previewThemeName">Theme Name</span>
+            <span class="preview-banner-note">&mdash; nothing is saved until you apply</span>
         </div>
         <div class="preview-banner-actions">
             <button class="btn-apply" onclick="applyPreview()">Apply Theme</button>
@@ -971,10 +1013,10 @@
 
     <!-- Import Modal -->
     <div id="importModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="importModalTitle">
             <div class="modal-header">
-                <h2>Import Settings</h2>
-                <button class="modal-close" onclick="closeImportModal()">&times;</button>
+                <h2 id="importModalTitle">Import Settings</h2>
+                <button class="modal-close" aria-label="Close" onclick="closeImportModal()">&times;</button>
             </div>
             <div class="modal-body">
                 <p>Paste your exported settings below:</p>
@@ -990,10 +1032,10 @@
 
     <!-- Changelog Modal -->
     <div id="changelogModal" class="modal">
-        <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-content" style="max-width: 600px;" role="dialog" aria-modal="true" aria-labelledby="changelogModalTitle">
             <div class="modal-header">
-                <h2>Changelog</h2>
-                <button class="modal-close" onclick="closeChangelogModal()">&times;</button>
+                <h2 id="changelogModalTitle">Changelog</h2>
+                <button class="modal-close" aria-label="Close" onclick="closeChangelogModal()">&times;</button>
             </div>
             <div class="modal-body" id="changelogBody" style="max-height: 400px; overflow-y: auto;">
                 <!-- Changelog entries rendered by JavaScript -->
@@ -1003,10 +1045,10 @@
 
     <!-- Theme Library Modal -->
     <div id="themeModal" class="modal theme-modal">
-        <div class="modal-content">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="themeModalTitle">
             <div class="modal-header">
-                <h2>Theme Library</h2>
-                <button class="modal-close" onclick="closeThemeLibrary()">&times;</button>
+                <h2 id="themeModalTitle">Theme Library</h2>
+                <button class="modal-close" aria-label="Close" onclick="closeThemeLibraryAndRestore()">&times;</button>
             </div>
             <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
                 <p>Click a theme to preview it. Your current colors are saved and will be restored if you cancel.</p>
@@ -1022,10 +1064,10 @@
 
     <!-- Commands Modal -->
     <div id="commandsModal" class="modal">
-        <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-content" style="max-width: 600px;" role="dialog" aria-modal="true" aria-labelledby="commandsModalTitle">
             <div class="modal-header">
-                <h2>All Commands</h2>
-                <button class="modal-close" onclick="closeCommandsModal()">&times;</button>
+                <h2 id="commandsModalTitle">All Commands</h2>
+                <button class="modal-close" aria-label="Close" onclick="closeCommandsModal()">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="command-output" id="commandOutput"></div>
@@ -1236,7 +1278,7 @@
                     <svg class="section-chevron collapsed" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
                 </div>
                 <div class="section-content collapsed" id="section-advanced">
-                    <p class="advanced-note">Fine-tune colors for specific message lengths and variations. These override the basic emote colors above.</p>
+                    <p class="advanced-note">Fine-tune colors for specific message lengths and variations. These override the basic emote colors above. Rows left at #FEFEFE count as "not set" and are skipped.</p>
                     <div class="advanced-grid" id="advancedGrid">
                         <!-- Generated by JavaScript -->
                     </div>
@@ -1260,7 +1302,7 @@
                     <input type="color" id="bgColor" value="#000000">
                     <input type="text" id="bgColorText" value="#000000" style="width: 72px; padding: 4px 6px; border: 1px solid #475569; border-radius: 4px; background: #0F172A; color: #F8FAFC; font-family: monospace; font-size: 0.82em;">
                     <label style="min-width: auto;">Opacity:</label>
-                    <input type="range" id="bgOpacity" min="0" max="100" value="75">
+                    <input type="range" id="bgOpacity" min="0" max="100" value="75" aria-label="Background opacity">
                     <span class="opacity-value" id="opacityValue">75%</span>
                 </div>
                 <div class="test-mode-toggle">
@@ -1280,7 +1322,7 @@
                     <span>Chat</span>
                     <div class="hex-display">
                         <code id="titlebarHex">#2D2D2D</code>
-                        <button class="copy-btn-small" onclick="copyHex('titlebar')">Copy</button>
+                        <button class="copy-btn-small" aria-label="Copy title bar hex value" onclick="copyHex('titlebar')">Copy</button>
                     </div>
                 </div>
                 <div class="chat-preview" id="chatPreview">
@@ -1300,7 +1342,7 @@
             <div class="bg-hex-display">
                 <span>Background:</span>
                 <code id="bgHex">#000000 @ 75%</code>
-                <button class="copy-btn-small" onclick="copyHex('bg')">Copy</button>
+                <button class="copy-btn-small" aria-label="Copy background hex value" onclick="copyHex('bg')">Copy</button>
             </div>
 
             <!-- Test Mode Actions (shown only in test mode) -->
@@ -1315,7 +1357,7 @@
         </div>
     </div>
 
-    <div class="copied-toast" id="toast">Copied to clipboard!</div>
+    <div class="copied-toast" id="toast" role="status" aria-live="polite">Copied to clipboard!</div>
 
     <script>
         // Basic color settings with their IDs and command mappings
@@ -1355,6 +1397,43 @@
         // Store advanced color values
         const advancedColors = {};
 
+        // Every advanced emote token this tool knows, in display order. Saved
+        // data, imports and share links may only set these — any other key is
+        // dropped, so nothing from outside can end up in the copied commands.
+        const KNOWN_ADVANCED = new Set(Object.values(advancedEmotes).flat());
+
+        // An advanced row showing this exact color means "not set" (no command).
+        const ADV_UNSET = '#FEFEFE';
+        function isAdvancedSet(color) {
+            return isValidHex(color) && color.toUpperCase() !== ADV_UNSET;
+        }
+
+        // Keep only known emotes with valid colors, normalized to uppercase.
+        // legacy = data written before v2.1.1, which has no format marker. Back
+        // then an uppercase '#FFFFFF' could only be the original "not set"
+        // placeholder (white from the picker is stored lowercase), and it was
+        // never output — so it still isn't.
+        function cleanAdvanced(raw, legacy = false) {
+            const out = {};
+            if (!raw || typeof raw !== 'object') return out;
+            for (const [emote, color] of Object.entries(raw)) {
+                if (!KNOWN_ADVANCED.has(emote)) continue;
+                if (!isValidHex(color)) continue;
+                if (legacy && color === '#FFFFFF') continue;
+                out[emote] = color.toUpperCase();
+            }
+            return out;
+        }
+
+        // Set one advanced color, and its inputs if the section has been opened
+        function setAdvancedColor(emote, color) {
+            advancedColors[emote] = color.toUpperCase();
+            const picker = document.getElementById(`adv_${emote}`);
+            const text = document.getElementById(`adv_${emote}Text`);
+            if (picker) picker.value = color;
+            if (text) text.value = color.toUpperCase();
+        }
+
         // Default values for reset
         const defaultColors = {
             nameColor: '#FEFEFE',
@@ -1392,6 +1471,7 @@
             const chevron = header.querySelector('.section-chevron');
             content.classList.toggle('collapsed');
             chevron.classList.toggle('collapsed');
+            header.setAttribute('aria-expanded', String(!content.classList.contains('collapsed')));
 
             // Lazy load advanced inputs on first expand
             if (sectionId === 'section-advanced' && !advancedGenerated) {
@@ -1418,7 +1498,7 @@
 
         // Validate hex color format
         function isValidHex(color) {
-            return /^#[0-9A-Fa-f]{6}$/i.test(color);
+            return typeof color === 'string' && /^#[0-9A-Fa-f]{6}$/.test(color);
         }
 
         // Helper to convert hex to RGB string
@@ -1457,12 +1537,65 @@
             };
         }
 
-        // Show toast notification
-        function showToast(message = 'Copied to clipboard!') {
+        // Show toast notification.
+        // options: { error: true } for a red toast, { actionLabel, onAction } to
+        // add a button (e.g. Undo), { duration } in ms.
+        let toastTimer = null;
+        function showToast(message = 'Copied to clipboard!', options = {}) {
+            const { error = false, actionLabel = null, onAction = null, duration = 2000 } = options;
             const toast = document.getElementById('toast');
+            clearTimeout(toastTimer); // a newer toast must not be hidden by an older toast's timer
             toast.textContent = message;
+            toast.classList.toggle('error', error);
+            if (actionLabel && onAction) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'toast-action';
+                btn.textContent = actionLabel;
+                btn.addEventListener('click', () => {
+                    clearTimeout(toastTimer);
+                    toast.classList.remove('show');
+                    onAction();
+                });
+                toast.appendChild(btn);
+            }
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
+        }
+
+        // Older copy method, for when the Clipboard API is missing or refused
+        function legacyCopy(text) {
+            const active = document.activeElement;
+            const selection = window.getSelection();
+            const savedRange = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none;';
+            document.body.appendChild(ta);
+            ta.select();
+            let ok = false;
+            try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+            ta.remove();
+            if (active && typeof active.focus === 'function') active.focus();
+            if (savedRange && selection) {
+                selection.removeAllRanges();
+                selection.addRange(savedRange);
+            }
+            return ok;
+        }
+
+        // Copy text, and only say "copied" once it really was
+        function copyText(text, successMessage) {
+            const failed = () => showToast("Couldn't copy — the browser blocked clipboard access", { error: true, duration: 4000 });
+            if (!navigator.clipboard || !navigator.clipboard.writeText) {
+                if (legacyCopy(text)) showToast(successMessage); else failed();
+                return;
+            }
+            navigator.clipboard.writeText(text).then(
+                () => showToast(successMessage),
+                () => { if (legacyCopy(text)) showToast(successMessage); else failed(); }
+            );
         }
 
         // Copy hex value
@@ -1473,8 +1606,7 @@
             } else {
                 hex = document.getElementById('bgColor').value.toUpperCase();
             }
-            navigator.clipboard.writeText(hex);
-            showToast(`Copied: ${hex}`);
+            copyText(hex, `Copied: ${hex}`);
         }
 
         // Copy a single command
@@ -1494,17 +1626,16 @@
             } else {
                 command = `/${type} ${rgb}`;
             }
-            navigator.clipboard.writeText(command);
-            showToast(`Copied: ${command}`);
+            copyText(command, `Copied: ${command}`);
         }
 
         // Copy advanced command
         function copyAdvancedCommand(emoteType) {
-            const color = advancedColors[emoteType] || '#FEFEFE';
+            if (!KNOWN_ADVANCED.has(emoteType)) return;
+            const color = advancedColors[emoteType] || ADV_UNSET;
             const rgb = hexToRgb(color);
             const command = `/emotecolor ${emoteType} ${rgb}`;
-            navigator.clipboard.writeText(command);
-            showToast(`Copied: ${command}`);
+            copyText(command, `Copied: ${command}`);
         }
 
         // Generate all commands
@@ -1516,10 +1647,13 @@
                 commands.push(`/${setting.command} ${rgb}`);
             }
 
-            // Include advanced if checkbox is checked
+            // Include advanced if checkbox is checked. Walk the known emotes (not
+            // whatever keys happen to be stored) so the output order is stable
+            // and only real emote tokens can ever be printed.
             if (document.getElementById('includeAdvanced').checked) {
-                for (const [emoteType, color] of Object.entries(advancedColors)) {
-                    if (color && color !== '#FFFFFF' && color !== '#FEFEFE') {
+                for (const emoteType of KNOWN_ADVANCED) {
+                    const color = advancedColors[emoteType];
+                    if (isAdvancedSet(color)) {
                         const rgb = hexToRgb(color);
                         commands.push(`/emotecolor ${emoteType} ${rgb}`);
                     }
@@ -1532,8 +1666,7 @@
         // Copy all commands
         function copyAllCommands() {
             const commands = generateAllCommands();
-            navigator.clipboard.writeText(commands);
-            showToast('All commands copied!');
+            copyText(commands, 'All commands copied!');
         }
 
         // Update command output display
@@ -1722,14 +1855,14 @@
                 for (const emote of emotes) {
                     const displayName = emote.replace(group.toLowerCase(), '');
                     // Use existing value if loaded from preferences, otherwise default
-                    const color = advancedColors[emote] || '#FEFEFE';
+                    const color = isValidHex(advancedColors[emote]) ? advancedColors[emote] : ADV_UNSET;
                     advancedColors[emote] = color;
                     html += `
                         <div class="advanced-row">
                             <label>${displayName || 'base'}</label>
-                            <input type="color" id="adv_${emote}" value="${color}" onchange="updateAdvancedColor('${emote}', this.value)">
-                            <input type="text" id="adv_${emote}Text" value="${color.toUpperCase()}" onchange="updateAdvancedColorFromText('${emote}', this.value)">
-                            <button class="copy-btn" onclick="copyAdvancedCommand('${emote}')">Copy</button>
+                            <input type="color" id="adv_${emote}" value="${color}" aria-label="${emote} color" onchange="updateAdvancedColor('${emote}', this.value)">
+                            <input type="text" id="adv_${emote}Text" value="${color.toUpperCase()}" aria-label="${emote} hex value" onchange="updateAdvancedColorFromText('${emote}', this.value)">
+                            <button class="copy-btn" aria-label="Copy ${emote} command" onclick="copyAdvancedCommand('${emote}')">Copy</button>
                         </div>
                     `;
                 }
@@ -1741,8 +1874,8 @@
 
         // Update advanced color
         function updateAdvancedColor(emoteType, value) {
-            advancedColors[emoteType] = value;
-            document.getElementById(`adv_${emoteType}Text`).value = value.toUpperCase();
+            if (!KNOWN_ADVANCED.has(emoteType) || !isValidHex(value)) return;
+            setAdvancedColor(emoteType, value);
             updateCommandOutput();
             savePreferences();
         }
@@ -1750,9 +1883,8 @@
         // Update advanced color from text input
         function updateAdvancedColorFromText(emoteType, value) {
             if (!value.startsWith('#')) value = '#' + value;
-            if (isValidHex(value)) {
-                advancedColors[emoteType] = value;
-                document.getElementById(`adv_${emoteType}`).value = value;
+            if (KNOWN_ADVANCED.has(emoteType) && isValidHex(value)) {
+                setAdvancedColor(emoteType, value);
                 updateCommandOutput();
                 savePreferences();
             }
@@ -1766,8 +1898,14 @@
 
         document.getElementById('includeAdvanced').addEventListener('change', updateCommandOutput);
 
-        // Reset to default values
+        // Reset to default values (with an Undo, since this wipes every color)
         function resetToDefaults() {
+            // If a theme is being previewed, go back to the user's own colors
+            // first, so that is what Undo brings back.
+            if (isPreviewing()) restoreSnapshot(workingConfigBackup);
+            endPreview();
+            const beforeReset = gatherAllSettings();
+
             // Clear localStorage
             safeStorage('remove', 'zb_chat_colors_prefs');
 
@@ -1784,11 +1922,7 @@
 
             // Reset advanced colors
             for (const emote of Object.keys(advancedColors)) {
-                advancedColors[emote] = '#FEFEFE';
-                const picker = document.getElementById(`adv_${emote}`);
-                const text = document.getElementById(`adv_${emote}Text`);
-                if (picker) picker.value = '#FEFEFE';
-                if (text) text.value = '#FEFEFE';
+                setAdvancedColor(emote, ADV_UNSET);
             }
 
             // Reset checkbox
@@ -1797,13 +1931,23 @@
             // Update preview and commands
             renderChatPreview();
             updateCommandOutput();
-            showToast('Reset to defaults!');
+            showToast('Reset to defaults', {
+                actionLabel: 'Undo',
+                duration: 8000,
+                onAction: () => {
+                    restoreSnapshot(beforeReset);
+                    savePreferences();
+                    renderChatPreview();
+                    updateCommandOutput();
+                    showToast('Your colors are back');
+                }
+            });
         }
 
         // Export settings to JSON
         function exportSettings() {
             const exportData = {
-                version: 1,
+                version: 2, // 2 = advanced colors are literal; only #FEFEFE means "not set"
                 colors: {},
                 advanced: { ...advancedColors },
                 preview: {
@@ -1820,8 +1964,7 @@
             }
 
             const json = JSON.stringify(exportData, null, 2);
-            navigator.clipboard.writeText(json);
-            showToast('Settings exported to clipboard!');
+            copyText(json, 'Settings exported to clipboard!');
         }
 
         // Open import modal
@@ -1856,50 +1999,18 @@
                     throw new Error('Invalid format: missing colors data.');
                 }
 
-                // Load basic colors
-                for (const [key, setting] of Object.entries(colorSettings)) {
-                    if (data.colors[key]) {
-                        const color = data.colors[key];
-                        if (isValidHex(color)) {
-                            document.getElementById(setting.id).value = color;
-                            document.getElementById(setting.id + 'Text').value = color.toUpperCase();
-                        }
-                    }
-                }
+                // Importing replaces the working colors, so it also ends any theme
+                // preview (otherwise "Keep My Colors" would undo the import).
+                endPreview();
 
-                // Load preview settings
-                if (data.preview) {
-                    if (data.preview.titlebar && isValidHex(data.preview.titlebar)) {
-                        document.getElementById('titlebarColor').value = data.preview.titlebar;
-                        document.getElementById('titlebarColorText').value = data.preview.titlebar.toUpperCase();
-                    }
-                    if (data.preview.background && isValidHex(data.preview.background)) {
-                        document.getElementById('bgColor').value = data.preview.background;
-                        document.getElementById('bgColorText').value = data.preview.background.toUpperCase();
-                    }
-                    if (data.preview.opacity) {
-                        document.getElementById('bgOpacity').value = data.preview.opacity;
-                        document.getElementById('opacityValue').textContent = data.preview.opacity + '%';
-                    }
-                }
-
-                // Load advanced colors
-                if (data.advanced) {
-                    for (const [emote, color] of Object.entries(data.advanced)) {
-                        if (isValidHex(color)) {
-                            advancedColors[emote] = color;
-                            const picker = document.getElementById(`adv_${emote}`);
-                            const text = document.getElementById(`adv_${emote}Text`);
-                            if (picker) picker.value = color;
-                            if (text) text.value = color.toUpperCase();
-                        }
-                    }
-                }
-
-                // Load checkbox state
-                if (data.includeAdvanced !== undefined) {
-                    document.getElementById('includeAdvanced').checked = data.includeAdvanced;
-                }
+                // Same path as themes and share links: validates every color and
+                // only accepts known advanced emotes.
+                applyColorsToUI({
+                    colors: data.colors,
+                    preview: data.preview,
+                    advanced: cleanAdvanced(data.advanced, !(data.version >= 2)),
+                    includeAdvanced: typeof data.includeAdvanced === 'boolean' ? data.includeAdvanced : undefined
+                });
 
                 // Save to localStorage, update preview, and close modal
                 savePreferences();
@@ -1953,6 +2064,21 @@
 
         // Changelog data - add new entries at the top
         const changelog = [
+            {
+                version: '2.1.1',
+                date: '2026-09-19',
+                changes: [
+                    'Fixed: changing a color while previewing a theme could overwrite your saved colors, so "Keep My Colors" did not survive a reload. Nothing is saved during a preview until you choose Apply Theme',
+                    'Applying a theme from the library now leaves your title bar, background and opacity alone',
+                    'Reset now offers an Undo for a few seconds',
+                    '"Copied" messages only appear when the copy really worked; if the browser blocks the clipboard, it says so',
+                    'Fixed a dead spot on the right end of the "View All Commands" button (an invisible notification was catching the clicks)',
+                    'Advanced emotes: white can now be used as a color — only rows left at #FEFEFE count as "not set"',
+                    'Imported settings and share links can only set the colors this tool knows about',
+                    'The Copy button under the chat window now matches the others',
+                    'Accessibility: every color control has a screen-reader name, sections open and close from the keyboard (Tab, then Enter or Space), and dim text and buttons are easier to read'
+                ]
+            },
             {
                 version: '2.1.0',
                 date: '2026-09-19',
@@ -2210,49 +2336,50 @@
                     document.getElementById('bgColor').value = settings.preview.background;
                     document.getElementById('bgColorText').value = settings.preview.background.toUpperCase();
                 }
-                if (settings.preview.opacity) {
-                    document.getElementById('bgOpacity').value = settings.preview.opacity;
-                    document.getElementById('opacityValue').textContent = settings.preview.opacity + '%';
+                // Opacity arrives from saved data, imports and share links: keep it a whole number 0–100
+                const opacity = parseInt(settings.preview.opacity, 10);
+                if (!Number.isNaN(opacity)) {
+                    const clamped = Math.min(100, Math.max(0, opacity));
+                    document.getElementById('bgOpacity').value = clamped;
+                    document.getElementById('opacityValue').textContent = clamped + '%';
                 }
             }
 
-            // Apply advanced colors
+            // Apply advanced colors (known emotes with valid colors only)
             if (settings.advanced) {
-                for (const [emote, color] of Object.entries(settings.advanced)) {
-                    if (isValidHex(color)) {
-                        advancedColors[emote] = color;
-                        const picker = document.getElementById(`adv_${emote}`);
-                        const text = document.getElementById(`adv_${emote}Text`);
-                        if (picker) picker.value = color;
-                        if (text) text.value = color.toUpperCase();
-                    }
+                for (const [emote, color] of Object.entries(cleanAdvanced(settings.advanced))) {
+                    setAdvancedColor(emote, color);
                 }
             }
 
             // Apply checkbox state
             if (settings.includeAdvanced !== undefined) {
-                document.getElementById('includeAdvanced').checked = settings.includeAdvanced;
+                document.getElementById('includeAdvanced').checked = !!settings.includeAdvanced;
             }
         }
 
-        // Convert theme colors to full settings format
+        // Put back a snapshot from gatherAllSettings() exactly. applyColorsToUI()
+        // only sets what the snapshot contains, so first clear any advanced color
+        // the snapshot doesn't have (e.g. one that came in with a previewed theme).
+        function restoreSnapshot(snapshot) {
+            const kept = snapshot.advanced || {};
+            for (const emote of Object.keys(advancedColors)) {
+                if (!(emote in kept)) setAdvancedColor(emote, ADV_UNSET);
+            }
+            applyColorsToUI(snapshot);
+        }
+
+        // Convert theme colors to settings format. Library themes only define the
+        // chat colors, so they leave the title bar, background, opacity and
+        // advanced colors exactly as the user has them.
         function themeToSettings(themeColors) {
-            return {
-                colors: themeColors,
-                advanced: {},
-                preview: {
-                    titlebar: '#2D2D2D',
-                    background: '#000000',
-                    opacity: '75'
-                },
-                includeAdvanced: false
-            };
+            return { colors: themeColors };
         }
 
         // Enter preview mode with given settings
         function enterPreviewMode(settings, source, themeName = 'Shared Theme') {
             // Backup current config if not already in preview mode
-            if (!workingConfigBackup) {
+            if (!isPreviewing()) {
                 workingConfigBackup = gatherAllSettings();
             }
 
@@ -2275,14 +2402,26 @@
             document.getElementById('previewBanner').classList.remove('visible');
         }
 
-        // Apply the previewed theme (commit it)
-        function applyPreview() {
+        // True only while the "Previewing: …" banner is up. (The backup alone isn't
+        // enough: it is also taken when the Theme Library is merely opened.)
+        function isPreviewing() {
+            return !!workingConfigBackup &&
+                document.getElementById('previewBanner').classList.contains('visible');
+        }
+
+        // Leave preview mode without touching any colors
+        function endPreview() {
             workingConfigBackup = null;
             previewSource = null;
             selectedThemeId = null;
-            savePreferences();
             hidePreviewBanner();
             clearUrlHash();
+        }
+
+        // Apply the previewed theme (commit it)
+        function applyPreview() {
+            endPreview(); // must come first: savePreferences() does nothing during a preview
+            savePreferences();
             closeThemeLibrary();
             showToast('Theme applied!');
         }
@@ -2290,15 +2429,11 @@
         // Cancel preview and restore original colors
         function cancelPreview() {
             if (workingConfigBackup) {
-                applyColorsToUI(workingConfigBackup);
+                restoreSnapshot(workingConfigBackup);
                 renderChatPreview();
                 updateCommandOutput();
-                workingConfigBackup = null;
             }
-            previewSource = null;
-            selectedThemeId = null;
-            hidePreviewBanner();
-            clearUrlHash();
+            endPreview();
             closeThemeLibrary();
             showToast('Restored your colors');
         }
@@ -2315,8 +2450,8 @@
         // ========================================
 
         function openThemeLibrary() {
-            // Backup current config when opening
-            if (!workingConfigBackup) {
+            // Backup current config when opening (a preview already in progress keeps its own)
+            if (!isPreviewing()) {
                 workingConfigBackup = gatherAllSettings();
             }
             selectedThemeId = null;
@@ -2406,7 +2541,7 @@
         // Get only colors that differ from defaults (for shorter share links)
         function getDeltaSettings() {
             const current = gatherAllSettings();
-            const delta = { colors: {} };
+            const delta = { v: 2, colors: {} }; // v = format marker, see cleanAdvanced()
 
             // Only include colors that differ from defaults
             for (const [key, setting] of Object.entries(colorSettings)) {
@@ -2431,7 +2566,7 @@
             // Only include advanced colors that are set and non-default
             const nonDefaultAdvanced = {};
             for (const [emote, color] of Object.entries(current.advanced || {})) {
-                if (color && color.toUpperCase() !== '#FEFEFE') {
+                if (isAdvancedSet(color)) {
                     nonDefaultAdvanced[emote] = color;
                 }
             }
@@ -2460,9 +2595,9 @@
                 full.colors[key] = delta.colors?.[key] || defaultColors[setting.id];
             }
 
-            // Expand advanced colors
+            // Expand advanced colors (known emotes only; links made before v2.1.1 have no marker)
             if (delta.adv) {
-                full.advanced = delta.adv;
+                full.advanced = cleanAdvanced(delta.adv, !delta.v);
             }
 
             return full;
@@ -2485,10 +2620,9 @@
 
                 // Copy as Discord-friendly markdown: [Theme Name](url)
                 const discordMarkdown = `[${name}](${url})`;
-                navigator.clipboard.writeText(discordMarkdown);
-                showToast('Copied as Discord link!');
+                copyText(discordMarkdown, 'Copied as Discord link!');
             } catch (e) {
-                showToast('Error generating share link');
+                showToast('Error generating share link', { error: true });
                 console.error('Share link error:', e);
             }
         }
@@ -2503,7 +2637,8 @@
                 // Unicode-safe decoding
                 const json = decodeURIComponent(atob(encoded));
                 const delta = JSON.parse(json);
-                const themeName = delta.n || delta.themeName || 'Shared Theme';
+                // The name comes from the link, so treat it as untrusted text: plain string, sane length
+                const themeName = String(delta.n || delta.themeName || 'Shared Theme').slice(0, 60);
 
                 // Expand delta to full settings
                 const settings = expandDeltaSettings(delta);
@@ -2553,7 +2688,14 @@
 
         // Save preferences to localStorage
         function savePreferences() {
+            // While a theme is being previewed the screen shows the theme, not the
+            // user's colors. Saving now would overwrite their stored palette, and
+            // "Keep My Colors" could no longer bring it back after a reload.
+            // Apply Theme ends the preview first and then saves.
+            if (isPreviewing()) return;
+
             const prefs = {
+                v: 2, // format marker, see cleanAdvanced()
                 colors: {},
                 advanced: advancedColors,
                 titlebar: document.getElementById('titlebarColor').value,
@@ -2577,46 +2719,20 @@
 
             try {
                 const prefs = JSON.parse(saved);
+                if (!prefs || typeof prefs !== 'object') return;
 
-                // Load basic colors
-                if (prefs.colors) {
-                    for (const [key, setting] of Object.entries(colorSettings)) {
-                        if (prefs.colors[key]) {
-                            document.getElementById(setting.id).value = prefs.colors[key];
-                            document.getElementById(setting.id + 'Text').value = prefs.colors[key].toUpperCase();
-                        }
-                    }
-                }
-
-                // Load preview settings
-                if (prefs.titlebar) {
-                    document.getElementById('titlebarColor').value = prefs.titlebar;
-                    document.getElementById('titlebarColorText').value = prefs.titlebar.toUpperCase();
-                }
-                if (prefs.background) {
-                    document.getElementById('bgColor').value = prefs.background;
-                    document.getElementById('bgColorText').value = prefs.background.toUpperCase();
-                }
-                if (prefs.opacity) {
-                    document.getElementById('bgOpacity').value = prefs.opacity;
-                    document.getElementById('opacityValue').textContent = prefs.opacity + '%';
-                }
-
-                // Load advanced colors
-                if (prefs.advanced) {
-                    for (const [emote, color] of Object.entries(prefs.advanced)) {
-                        advancedColors[emote] = color;
-                        const picker = document.getElementById(`adv_${emote}`);
-                        const text = document.getElementById(`adv_${emote}Text`);
-                        if (picker) picker.value = color;
-                        if (text) text.value = color.toUpperCase();
-                    }
-                }
-
-                // Load checkbox state
-                if (prefs.includeAdvanced !== undefined) {
-                    document.getElementById('includeAdvanced').checked = prefs.includeAdvanced;
-                }
+                // Saved data is stored flat; hand it to the same validated path
+                // that imports, themes and share links use.
+                applyColorsToUI({
+                    colors: prefs.colors,
+                    preview: {
+                        titlebar: prefs.titlebar,
+                        background: prefs.background,
+                        opacity: prefs.opacity
+                    },
+                    advanced: cleanAdvanced(prefs.advanced, !prefs.v),
+                    includeAdvanced: prefs.includeAdvanced
+                });
             } catch (e) {
                 console.warn('Failed to load preferences:', e);
             }
@@ -2659,6 +2775,39 @@
         initColorInputsWithSave();
         renderChatPreview();
         updateCommandOutput();
+
+        // Accessible names and keyboard access. The visible labels aren't tied to
+        // their inputs, so give each control a name a screen reader can announce,
+        // and let the section headers be reached and toggled from the keyboard.
+        function initAccessibility() {
+            document.querySelectorAll('.color-row, .setting-row').forEach(row => {
+                const label = row.querySelector('label');
+                if (!label) return;
+                const name = label.textContent.replace(/:\s*$/, '').replace(/\s+color$/i, '').trim();
+                const picker = row.querySelector('input[type="color"]');
+                const text = row.querySelector('input[type="text"]');
+                const copy = row.querySelector('.copy-btn');
+                if (picker) picker.setAttribute('aria-label', `${name} color`);
+                if (text) text.setAttribute('aria-label', `${name} color, hex value`);
+                if (copy) copy.setAttribute('aria-label', `Copy ${name} command`);
+            });
+
+            document.querySelectorAll('.section-header').forEach(header => {
+                const content = header.nextElementSibling;
+                header.setAttribute('role', 'button');
+                header.setAttribute('tabindex', '0');
+                header.setAttribute('aria-controls', content.id);
+                header.setAttribute('aria-expanded', String(!content.classList.contains('collapsed')));
+                header.addEventListener('keydown', (e) => {
+                    if (e.target !== header) return;
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleSection(content.id);
+                    }
+                });
+            });
+        }
+        initAccessibility();
 
         // Save on opacity and checkbox changes
         document.getElementById('bgOpacity').addEventListener('change', savePreferences);
@@ -2989,8 +3138,7 @@
 
         // Copy raw text from the editor
         function copyTestText() {
-            navigator.clipboard.writeText(getTestText());
-            showToast('Copied RP text!');
+            copyText(getTestText(), 'Copied RP text!');
         }
 
         // Clear the editor

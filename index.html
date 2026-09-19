@@ -1085,10 +1085,10 @@
                 </div>
             </div>
 
-            <!-- Voice Channels -->
+            <!-- Dialogue Only (section id: section-voice) -->
             <div class="settings-section">
                 <div class="section-header" onclick="toggleSection('section-voice')">
-                    <span>Voice Channels</span>
+                    <span>Dialogue Only</span>
                     <svg class="section-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
                 </div>
                 <div class="section-content" id="section-voice">
@@ -1127,10 +1127,10 @@
                 </div>
             </div>
 
-            <!-- Voice Me -->
+            <!-- Emotes & Dialogue (section id: section-voiceme) -->
             <div class="settings-section">
                 <div class="section-header" onclick="toggleSection('section-voiceme')">
-                    <span>Voice Me</span>
+                    <span>Emotes &amp; Dialogue</span>
                     <svg class="section-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
                 </div>
                 <div class="section-content" id="section-voiceme">
@@ -1171,12 +1171,6 @@
                 </div>
                 <div class="section-content" id="section-rp">
                     <div class="color-group">
-                        <div class="color-row">
-                            <label data-tippy-content="Character actions and emotes. Describes what your character is doing.">/me</label>
-                            <input type="color" id="meColor" value="#DFFDFF">
-                            <input type="text" id="meColorText" value="#DFFDFF">
-                            <button class="copy-btn" onclick="copyCommand('emotecolor', 'me')">Copy</button>
-                        </div>
                         <div class="color-row">
                             <label data-tippy-content="Environment descriptions. Describes surroundings or events, not character actions.">/do</label>
                             <input type="color" id="doColor" value="#E1DFFF">
@@ -1335,7 +1329,6 @@
             say: { id: 'sayColor', command: 'emotecolor say' },
             long: { id: 'longColor', command: 'emotecolor long' },
             yell: { id: 'yellColor', command: 'emotecolor yell' },
-            me: { id: 'meColor', command: 'emotecolor me' },
             do: { id: 'doColor', command: 'emotecolor do' },
             ooc: { id: 'oocColor', command: 'emotecolor ooc' },
             mewhisper: { id: 'mewhisperColor', command: 'emotecolor whisperme' },
@@ -1373,7 +1366,6 @@
             sayColor: '#FEFEFE',
             longColor: '#FFD699',
             yellColor: '#E69696',
-            meColor: '#DFFDFF',
             doColor: '#E1DFFF',
             oocColor: '#92FF94',
             mewhisperColor: '#B4FFC5',
@@ -1585,7 +1577,6 @@
             const melowColor = document.getElementById('melowColor').value;
             const menormalColor = document.getElementById('menormalColor').value;
             const melongColor = document.getElementById('melongColor').value;
-            const meColor = document.getElementById('meColor').value;
             const doColor = document.getElementById('doColor').value;
             const oocColor = document.getElementById('oocColor').value;
             const pmColor = document.getElementById('pmColor').value;
@@ -1636,11 +1627,11 @@
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:09]</span>
-                    <span style="color: ${meColor}">* <span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span style="color: ${italicColor}">*looks around nervously*</span> <span style="color: ${dialogueColor}">"Is anyone there? <span style="color: ${italicColor};font-style:italic">*Please...*</span>"</span></span>
+                    <span style="color: ${menormalColor}">* <span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span style="color: ${italicColor}">*looks around nervously*</span> <span style="color: ${dialogueColor}">"Is anyone there? <span style="color: ${italicColor};font-style:italic">*Please...*</span>"</span></span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:10]</span>
-                    <span style="color: ${meColor}">* <span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span class="bold" style="color: ${boldColor}">**slams the door shut**</span></span>
+                    <span style="color: ${menormalColor}">* <span class="chat-name" style="color: ${nameColor}">${playerName}</span> <span class="bold" style="color: ${boldColor}">**slams the door shut**</span></span>
                 </div>
                 <div class="chat-message">
                     <span class="timestamp">[12:11]</span>
@@ -1711,7 +1702,7 @@
                 'nameColor', 'dialogueColor', 'italicColor', 'boldColor',
                 'whisperColor', 'lowColor', 'sayColor', 'longColor', 'yellColor',
                 'mewhisperColor', 'melowColor', 'menormalColor', 'melongColor',
-                'meColor', 'doColor', 'oocColor',
+                'doColor', 'oocColor',
                 'pmColor', 'factionColor', 'safehouseColor', 'generalColor', 'adminColor',
                 'titlebarColor', 'bgColor'
             ];
@@ -1966,6 +1957,8 @@
                 version: '2.1.0',
                 date: '2026-09-19',
                 changes: [
+                    'Removed the duplicate /me setting from Roleplay Channels — /me now lives only under Emotes & Dialogue (both set the same /emotecolor me, so Copy All Commands no longer lists it twice)',
+                    'Renamed the "Voice Me" section to "Emotes & Dialogue" and "Voice Channels" to "Dialogue Only"',
                     'Rebuilt the Test Mode editor as a single text layer, so the cursor always lands exactly where you click (no more drift between the typed text and the colored text)',
                     'Colors are now painted with the CSS Custom Highlight API instead of a second copy of the text',
                     '*italic* text is shown by color only, matching how TICS displays it in game',
@@ -2083,7 +2076,7 @@
                 colors: {
                     name: '#FEFEFE', dialogue: '#FEFEFE', italic: '#ADD4A0', bold: '#C3A4CF',
                     whisper: '#B4FFC5', low: '#B4FFFF', say: '#FEFEFE', long: '#FFD699', yell: '#E69696',
-                    me: '#DFFDFF', do: '#E1DFFF', ooc: '#92FF94',
+                    do: '#E1DFFF', ooc: '#92FF94',
                     mewhisper: '#B4FFC5', melow: '#B4FFFF', menormal: '#DFFDFF', melong: '#FFD699',
                     pm: '#FFB8DA', faction: '#AAFFAA', safehouse: '#FFFF60', general: '#BEBEFF', admin: '#FFAAAA'
                 }
@@ -2094,7 +2087,7 @@
                 colors: {
                     name: '#00FF88', dialogue: '#FFFFFF', italic: '#FF00FF', bold: '#00FFFF',
                     whisper: '#00FF88', low: '#00FFAA', say: '#00FFFF', long: '#FFFF00', yell: '#FF0066',
-                    me: '#00FFFF', do: '#FF00FF', ooc: '#00FF00',
+                    do: '#FF00FF', ooc: '#00FF00',
                     mewhisper: '#00FF88', melow: '#00FFAA', menormal: '#00FFFF', melong: '#FFFF00',
                     pm: '#FF69B4', faction: '#00FF00', safehouse: '#FFFF00', general: '#00BFFF', admin: '#FF4444'
                 }
@@ -2105,7 +2098,7 @@
                 colors: {
                     name: '#FFB366', dialogue: '#FFF5E6', italic: '#FF9999', bold: '#FFD700',
                     whisper: '#FFCC99', low: '#FFB380', say: '#FFF0E0', long: '#FF9966', yell: '#FF6633',
-                    me: '#FFE4CC', do: '#FFCCB3', ooc: '#FFD9B3',
+                    do: '#FFCCB3', ooc: '#FFD9B3',
                     mewhisper: '#FFCC99', melow: '#FFB380', menormal: '#FFE4CC', melong: '#FF9966',
                     pm: '#FFB3D9', faction: '#FFCC80', safehouse: '#FFE066', general: '#FFB399', admin: '#FF8080'
                 }
@@ -2116,7 +2109,7 @@
                 colors: {
                     name: '#66D9FF', dialogue: '#E6FFFF', italic: '#99FFCC', bold: '#66B3FF',
                     whisper: '#80FFEA', low: '#66FFD9', say: '#CCFFFF', long: '#66B3FF', yell: '#3399FF',
-                    me: '#99FFFF', do: '#B3E6FF', ooc: '#80FFD4',
+                    do: '#B3E6FF', ooc: '#80FFD4',
                     mewhisper: '#80FFEA', melow: '#66FFD9', menormal: '#99FFFF', melong: '#66B3FF',
                     pm: '#B3D9FF', faction: '#80FFBF', safehouse: '#99FFFF', general: '#99CCFF', admin: '#6699FF'
                 }
@@ -2127,7 +2120,7 @@
                 colors: {
                     name: '#90EE90', dialogue: '#F0FFF0', italic: '#98FB98', bold: '#8FBC8F',
                     whisper: '#98FB98', low: '#90EE90', say: '#E8F5E9', long: '#DAA520', yell: '#CD853F',
-                    me: '#B2DFDB', do: '#C8E6C9', ooc: '#A5D6A7',
+                    do: '#C8E6C9', ooc: '#A5D6A7',
                     mewhisper: '#98FB98', melow: '#90EE90', menormal: '#B2DFDB', melong: '#DAA520',
                     pm: '#F0E68C', faction: '#8FBC8F', safehouse: '#BDB76B', general: '#9ACD32', admin: '#DEB887'
                 }
@@ -2138,7 +2131,7 @@
                 colors: {
                     name: '#FFB3BA', dialogue: '#FFFEF0', italic: '#BAFFC9', bold: '#BAE1FF',
                     whisper: '#E2F0CB', low: '#B5EAD7', say: '#FFEFD5', long: '#FFDAC1', yell: '#FFB7B2',
-                    me: '#C7CEEA', do: '#E2F0CB', ooc: '#B5EAD7',
+                    do: '#E2F0CB', ooc: '#B5EAD7',
                     mewhisper: '#E2F0CB', melow: '#B5EAD7', menormal: '#C7CEEA', melong: '#FFDAC1',
                     pm: '#FFB3DE', faction: '#BAFFC9', safehouse: '#FFFFBA', general: '#BAE1FF', admin: '#FFB3BA'
                 }
@@ -2149,7 +2142,7 @@
                 colors: {
                     name: '#FFFFFF', dialogue: '#F0F0F0', italic: '#CCCCCC', bold: '#FFFFFF',
                     whisper: '#AAAAAA', low: '#BBBBBB', say: '#DDDDDD', long: '#EEEEEE', yell: '#FFFFFF',
-                    me: '#D0D0D0', do: '#C0C0C0', ooc: '#B0B0B0',
+                    do: '#C0C0C0', ooc: '#B0B0B0',
                     mewhisper: '#AAAAAA', melow: '#BBBBBB', menormal: '#D0D0D0', melong: '#EEEEEE',
                     pm: '#E0E0E0', faction: '#CCCCCC', safehouse: '#DDDDDD', general: '#C8C8C8', admin: '#F5F5F5'
                 }
@@ -2160,7 +2153,7 @@
                 colors: {
                     name: '#FFFF00', dialogue: '#FFFFFF', italic: '#00FF00', bold: '#FF00FF',
                     whisper: '#00FF00', low: '#00FFFF', say: '#FFFFFF', long: '#FFA500', yell: '#FF0000',
-                    me: '#00FFFF', do: '#FF00FF', ooc: '#00FF00',
+                    do: '#FF00FF', ooc: '#00FF00',
                     mewhisper: '#00FF00', melow: '#00FFFF', menormal: '#00FFFF', melong: '#FFA500',
                     pm: '#FF69B4', faction: '#00FF00', safehouse: '#FFFF00', general: '#87CEEB', admin: '#FF6347'
                 }
@@ -2354,7 +2347,7 @@
                 const swatches = [
                     theme.colors.name,
                     theme.colors.say,
-                    theme.colors.me,
+                    theme.colors.menormal,
                     theme.colors.ooc,
                     theme.colors.pm
                 ];
@@ -2635,7 +2628,7 @@
                 'nameColor', 'dialogueColor', 'italicColor', 'boldColor',
                 'whisperColor', 'lowColor', 'sayColor', 'longColor', 'yellColor',
                 'mewhisperColor', 'melowColor', 'menormalColor', 'melongColor',
-                'meColor', 'doColor', 'oocColor',
+                'doColor', 'oocColor',
                 'pmColor', 'factionColor', 'safehouseColor', 'generalColor', 'adminColor',
                 'titlebarColor', 'bgColor'
             ];

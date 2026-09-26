@@ -2065,6 +2065,13 @@
         // Changelog data - add new entries at the top
         const changelog = [
             {
+                version: '2.1.2',
+                date: '2026-09-25',
+                changes: [
+                    'Test Mode: /mew and /wme now work as shortcuts for /mewhisper, colored exactly like the long form'
+                ]
+            },
+            {
                 version: '2.1.1',
                 date: '2026-09-19',
                 changes: [
@@ -2859,6 +2866,11 @@
         function getCommandColorMap() {
             return [
                 { cmd: '/mewhisper ' , color: () => document.getElementById('mewhisperColor').value },
+                // Aliases for /mewhisper. Typing these behaves exactly like the long
+                // form; they are shorthand for the notepad only and are not listed in
+                // the hint line. Must sit before '/me ' so the shorter prefix can't win.
+                { cmd: '/mew '       , color: () => document.getElementById('mewhisperColor').value },
+                { cmd: '/wme '       , color: () => document.getElementById('mewhisperColor').value },
                 { cmd: '/melow '     , color: () => document.getElementById('melowColor').value },
                 { cmd: '/melong '    , color: () => document.getElementById('melongColor').value },
                 { cmd: '/me '        , color: () => document.getElementById('menormalColor').value },

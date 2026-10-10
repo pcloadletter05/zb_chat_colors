@@ -5,6 +5,7 @@ A web-based color picker tool for the **Total Immersive Chat System (TICS)** mod
 ## Features
 
 - **Live Preview**: See how your colors look in a simulated chat window
+- **Try Your Own**: Switch the chat window to a notepad and type your own emotes to see them in your colors (expandable to nearly full screen)
 - **Color Picker UI**: Click any color to open a visual color selector
 - **All Chat Channels**: Customize colors for whisper, low, say, yell, me, do, ooc, pm, faction, safehouse, general, and admin
 - **Text Formatting**: Set colors for dialogue (quotes), italics, and bold text

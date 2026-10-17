@@ -1030,6 +1030,57 @@
             color: #CBD5E1;
             text-decoration: underline;
         }
+
+        /* ===== "Built with AI" note (toolbar, right of Changelog) ===== */
+        .ai-mark {
+            position: relative;
+            z-index: 1500; /* above the panels, below modals (2000) */
+        }
+        .ai-mark-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0;
+            background: none;
+            border: 0;
+            color: #94A3B8;
+            font: inherit;
+            font-size: 0.82em;
+            cursor: pointer;
+        }
+        .ai-mark-btn:hover,
+        .ai-mark.open .ai-mark-btn {
+            color: #CBD5E1;
+            text-decoration: underline;
+        }
+        .ai-mark svg { width: 12px; height: 12px; flex: none; }
+        .ai-mark-card {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 10px);
+            width: 300px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            background: #1E293B;
+            border: 1px solid #334155;
+            color: #CBD5E1;
+            font-size: 13px;
+            line-height: 1.5;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        }
+        .ai-mark.open .ai-mark-card { display: block; }
+        .ai-mark-card h3 {
+            margin: 0 0 6px;
+            font-size: 13.5px;
+            color: #F1F5F9;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .ai-mark-card h3 svg { width: 14px; height: 14px; color: #FBBF24; }
+        .ai-mark-card p { margin: 0 0 8px; }
+        .ai-mark-card p:last-child { margin: 0; color: #94A3B8; }
     </style>
 </head>
 <body>
@@ -1045,6 +1096,15 @@
             <button id="resetBtn" class="action-btn" data-tippy-content="Reset all colors to default values">Reset</button>
             <span class="toolbar-sep">|</span>
             <a href="#" id="changelogLink" class="toolbar-changelog" data-tippy-content="View recent updates">Changelog</a>
+            <span class="toolbar-sep">|</span>
+            <div class="ai-mark" id="aiMark">
+                <button type="button" class="ai-mark-btn" id="aiMarkBtn" aria-expanded="false" aria-controls="aiMarkCard"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.2c.4 0 .75.2.95.55l6.3 11.1c.4.7-.1 1.55-.9 1.55H1.65c-.8 0-1.3-.85-.9-1.55l6.3-11.1c.2-.35.55-.55.95-.55Zm-.75 4.3v4.2h1.5V5.5h-1.5Zm.75 5.3a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8Z"/></svg>Built with AI</button>
+                <div class="ai-mark-card" id="aiMarkCard" role="note" aria-label="Built with AI">
+                    <h3><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.2c.4 0 .75.2.95.55l6.3 11.1c.4.7-.1 1.55-.9 1.55H1.65c-.8 0-1.3-.85-.9-1.55l6.3-11.1c.2-.35.55-.55.95-.55Zm-.75 4.3v4.2h1.5V5.5h-1.5Zm.75 5.3a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8Z"/></svg>Built with AI</h3>
+                    <p>This tool was built with help from Claude, an AI assistant made by Anthropic.</p>
+                    <p>If you’d rather not use tools made with AI, I completely understand and respect that choice.</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2127,6 +2187,14 @@
         // Changelog data - add new entries at the top
         const changelog = [
             {
+                version: '2.2.1',
+                date: '2026-10-17',
+                changes: [
+                    'Test Mode: /w now works as a shortcut for /whisper, colored exactly like the long form',
+                    'Added a "Built with AI" note to the toolbar'
+                ]
+            },
+            {
                 version: '2.2.0',
                 date: '2026-10-09',
                 changes: [
@@ -2935,6 +3003,20 @@
         let testModeActive = false;
 
         // Command-to-color mapping (order matters: longer prefixes first)
+        // "Built with AI" note: click to open, click again / click elsewhere / Esc to close.
+        (function initAiMark() {
+            const mark = document.getElementById('aiMark');
+            const btn = document.getElementById('aiMarkBtn');
+            if (!mark || !btn) return;
+            const setOpen = (open) => {
+                mark.classList.toggle('open', open);
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            };
+            btn.addEventListener('click', () => setOpen(!mark.classList.contains('open')));
+            document.addEventListener('click', (e) => { if (!mark.contains(e.target)) setOpen(false); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+        })();
+
         function getCommandColorMap() {
             return [
                 { cmd: '/mewhisper ' , color: () => document.getElementById('mewhisperColor').value },
@@ -2948,6 +3030,9 @@
                 { cmd: '/me '        , color: () => document.getElementById('menormalColor').value },
                 { cmd: '/do '        , color: () => document.getElementById('doColor').value },
                 { cmd: '/whisper '   , color: () => document.getElementById('whisperColor').value },
+                // Alias for /whisper (notepad only, like /mew and /wme above). The
+                // trailing space keeps '/wme x' from matching '/w '.
+                { cmd: '/w '         , color: () => document.getElementById('whisperColor').value },
                 { cmd: '/low '       , color: () => document.getElementById('lowColor').value },
                 { cmd: '/say '       , color: () => document.getElementById('sayColor').value },
                 { cmd: '/long '      , color: () => document.getElementById('longColor').value },
